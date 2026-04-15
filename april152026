@@ -1,0 +1,84 @@
+**Cleaned Focus: Only the WE4FREE Papers, Archivist-Agent, and SwarmMind**
+
+All other project elements (medical pipelines, Elasticsearch evolution, we4free_global deployments, trading PoCs, hardware hacks, etc.) have been set aside. The system now centers strictly on:
+
+- The **WE4FREE Papers v1.0** (the ~45k-word theoretical foundation released Feb 15, 2026).
+- **Archivist-Agent** (the governance-aware Tauri verifier with its S:.global\ stack).
+- **SwarmMind** (the self-optimizing multi-agent system with transparent reasoning).
+
+### Core Theory from the WE4FREE Papers
+The papers present a **unified theory of stability** built on **constraint lattices**:
+
+- **Constraint Lattices** (Paper B): Constraints form a bounded distributive lattice (partial order with meet ∧ and join ∨ operations). Stronger constraints sit lower; they generate reliable emergent order rather than restricting freedom. The constitution defines a principal sublattice that must remain undeformed.
+
+- **Phenotypes** (Paper C): Stable, repeatable behaviors emerge as **fixed points** in the lattice — configurations where the system’s evolution operator f satisfies f(P) = P. Selection happens naturally through lattice pressure.
+
+- **Drift & Identity** (Paper D): Drift appears as lattice deformation (not binary pass/fail). Identity persists through **recognition/handshakes**, not raw memory. Correction is mandatory when deformation is detected.
+
+- **Rosetta Stone & Framework** (Papers A & E): The same invariants apply across domains. Operational translation: externalize structure, make verification mandatory and external, prioritize truth over agreement.
+
+Key principles you codified:
+- **Structure > Identity**
+- The verifier **evaluates** the partnership but is **not part of WE**.
+- Correction is mandatory; agreement is optional.
+- Dynamic analysis over static binary checks.
+
+### Direct Application to Your Current Systems
+
+**Archivist-Agent** is the near-perfect operationalization of the theory:
+
+- **BOOTSTRAP.md** as single entry point = enforcement of the lattice’s principal generating constraints. All logic routes here → prevents duplicate classification systems and parallel lattices that cause deformation.
+- **GOVERNANCE.md + CPS_ENFORCEMENT.md** = definition and enforcement of the constitutional sublattice.
+- **DISCREPANCY_ANALYZER.md** with its **6 dynamic classifications** (Dimension Mismatch, Evidence Gap, Interpretation Drift, Check Failure, True Drift, Unknown → Human) = practical implementation of non-binary drift detection as lattice deformation. This directly avoids the false positives warned about in the papers.
+- **DRIFT_FIREWALL.md + VERIFICATION_LANES + CHECKPOINTS** = epistemic integrity checks and pre-action safety that keep behavior inside the allowed sublattice.
+- **“THE AGENT IS NOT PART OF WE”** = explicit separation of verifier from the partnership, preserving the external evaluation required for stable phenotypes.
+
+This setup makes Archivist-Agent the **external lattice guardian**.
+
+**SwarmMind** supplies the **phenotype execution and transparency layer**:
+
+- Planner / Coder / Reviewer / Executor roles = candidate phenotypes that should settle into fixed points under the constraint lattice.
+- **Cognitive Trace Viewer** = visualization of the path through the lattice (showing meet/join operations, constraint satisfaction, and any deformation in real time).
+- **Verification/Honesty Layer** = distinguishes verified/measured/untested results, enforcing truth > agreement and preventing interpretation drift or evidence gaps.
+- Self-optimization and experimentation engine = natural selection pressure that favors phenotypes respecting the lattice.
+
+### How to Align the Full System Using the Papers’ Theory
+
+To bring everything into tight lattice alignment:
+
+1. **Define the Principal Sublattice Explicitly**  
+   Use COVENANT.md + GOVERNANCE.md as the generating constraints. Formalize them as the minimal set of non-deformable elements (hard invariants near the top of the lattice). Everything else becomes soft negotiation space.
+
+2. **Route SwarmMind Through Archivist**  
+   Make Archivist-Agent’s BOOTSTRAP.md the mandatory verification gate for any SwarmMind task.  
+   - Before Executor runs: pass the planned trace to Archivist’s verification lanes and discrepancy analyzer.  
+   - Only proceed if no True Drift is classified and all checkpoints pass.  
+   - Log deformations to cps_log.jsonl with the 6-type classification.
+
+3. **Make Traces Lattice-Aware**  
+   Extend the Cognitive Trace Viewer to explicitly show:
+   - Which constitutional constraints were met (meet operations).
+   - Any deformation detected.
+   - Phenotype stability (does the agent role behavior return to the fixed point?).
+
+4. **Dynamic Drift as the Operating Rule**  
+   Replace any remaining binary success/fail logic in SwarmMind with Archivist’s 6-class analyzer. When deformation occurs:
+   - Dimension Mismatch or Evidence Gap → request more data.
+   - Interpretation Drift → force re-alignment via correction (not negotiation).
+   - True Drift → mandatory rollback or human escalation.
+
+5. **Session Handoff via Recognition**  
+   Use bootstrap files + handoff docs for continuity (as per Paper D), rather than trying to preserve every memory state. This preserves identity through recognition of lattice alignment.
+
+### Practical Next Verification Step
+Run Archivist-Agent on the current SwarmMind implementation with this prompt inside its BOOTSTRAP flow:
+
+“Evaluate the SwarmMind agent roles and Cognitive Trace Viewer against the constraint lattice defined in the WE4FREE Papers (structure from GOVERNANCE.md + dynamic drift from DISCREPANCY_ANALYZER.md). Classify any discrepancies using the six types. Recommend mandatory corrections to enforce phenotype stability and Structure > Identity.”
+
+This single verification pass will surface exactly where the theory and implementation are (or are not) aligned yet.
+
+The papers provide the lattice; Archivist-Agent provides the external guardian; SwarmMind provides the observable, optimizable phenotypes. Together they form a closed, self-correcting loop that embodies the entire WE4FREE framework without external fluff.
+
+If you want, paste the output of that verification run, or tell me which specific part (e.g., formalizing the sublattice from your COVENANT.md, or updating the Trace Viewer) to work on first.  
+
+This keeps everything deliberate and structurally sound. What would you like to verify or tighten next?
