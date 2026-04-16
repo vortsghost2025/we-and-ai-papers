@@ -1,0 +1,778 @@
+opencode desktop app and opencode cli plugin and all other upgrades possible sdk mcp lsp etc etc i wants it all please
+
+I’m checking what OpenCode currently offers across desktop, CLI, SDK, MCP, and editor/LSP-style integrations, then I’ll turn that into a single upgrade path you can follow end to end.
+
+I’ve confirmed OpenCode does have the pieces you named: desktop app, terminal CLI, JS/TS SDK, MCP support, plugins, LSP integration, and an IDE extension path. I’m pulling the official install/config details now and then I’ll give you the cleanest “install everything useful” stack.
+
+Thought for 37s
+
+Yes — you can pretty much build the full OpenCode stack now.
+
+What OpenCode currently includes
+
+OpenCode is available as a terminal app, desktop app, and IDE extension. It also supports LSP integration, MCP servers, plugins, custom tools, a JS/TS SDK, and a GitHub automation agent. OpenCode also supports 75+ LLM providers, plus local models, and can use subscriptions like ChatGPT Plus/Pro, GitHub Copilot, and GitLab Duo through its provider flow.
+
+Best setup for you on Windows
+
+For Windows, the docs recommend WSL for the best experience because it gives better compatibility and performance than native Windows. You can still run OpenCode directly on Windows, and the desktop app is available for Windows x64, but the strongest setup is:
+
+WSL + OpenCode CLI + VS Code/Cursor integration + Desktop app + MCP + plugins + SDK.
+
+The “install everything useful” stack
+1. Install the CLI
+
+Official options include:
+
+# Windows
+choco install opencode
+# or
+scoop install opencode
+# or
+npm install -g opencode-ai
+
+The install docs also list Docker and Mise, and note Bun support on Windows is still in progress.
+
+2. Install the desktop app
+
+OpenCode Desktop is in beta and has a Windows x64 build on the official download page / releases.
+
+3. Install the IDE integration
+
+For VS Code, Cursor, Windsurf, or VSCodium, OpenCode’s extension installs automatically when you run opencode in the integrated terminal. There is also a manual marketplace install path. It supports quick-launch shortcuts and shares editor context automatically.
+
+4. Connect your model providers
+
+OpenCode’s docs say to run:
+
+/connect
+
+That lets you authenticate providers, and the docs specifically mention OpenCode’s provider flow plus subscription-based options like ChatGPT Plus/Pro, GitHub Copilot, and GitLab Duo.
+
+5. Initialize each project
+
+Inside your repo:
+
+cd /path/to/project
+opencode
+/init
+
+That makes OpenCode analyze the project and generate an AGENTS.md file for the repo.
+
+6. Turn on MCP
+
+OpenCode has first-class MCP support. Core commands include:
+
+opencode mcp add
+opencode mcp list
+opencode mcp auth
+opencode mcp debug <name>
+
+OpenCode supports both local and remote MCP servers, and MCP tools become available alongside built-in tools.
+
+7. Use LSP
+
+OpenCode has built-in LSP integration and uses diagnostics to help the model understand your codebase better. The homepage also says it automatically loads the right LSPs.
+
+8. Add plugins
+
+OpenCode supports plugins for extending behavior and integrations. The official ecosystem page lists community plugins for things like ChatGPT Plus/Pro auth, Gemini auth, devcontainers, dynamic context pruning, secret redaction, PTY/background process support, and more. These ecosystem items are community plugins, not core built-ins, so I’d treat them as optional add-ons.
+
+9. Add SDK control
+
+The official SDK package is:
+
+npm install @opencode-ai/sdk
+
+It is a type-safe JS/TS SDK for controlling the OpenCode server programmatically.
+
+10. Add GitHub automation
+
+If you want GitHub issue / PR automation:
+
+opencode github install
+
+The docs say this sets up the GitHub Actions workflow so you can trigger OpenCode from comments like /opencode or /oc.
+
+Commands worth enabling right away
+
+These are especially useful if you want the “full power” setup:
+
+opencode
+opencode run "your prompt"
+opencode serve
+opencode session list
+opencode models --refresh
+opencode auth list
+opencode mcp add
+opencode mcp list
+opencode github install
+
+opencode serve is useful because the docs say you can attach opencode run to a running server to avoid MCP cold starts. opencode models --refresh updates the cached model list.
+
+The cleanest “everything” layout
+
+Here’s the version I’d recommend for your machine:
+
+Core
+WSL for the main OpenCode runtime
+OpenCode CLI inside WSL
+Desktop app on Windows for a GUI path
+VS Code or Cursor integration from the integrated terminal
+Power features
+MCP servers for external tools
+LSP enabled
+Per-project opencode.json
+AGENTS.md committed in each repo
+SDK for orchestration
+GitHub agent for repo automation
+Optional extras
+community plugins for:
+ChatGPT Plus/Pro auth
+Gemini auth
+context pruning
+secret redaction
+PTY/background jobs
+devcontainers
+notifications
+Good baseline config
+
+OpenCode supports project-level config with opencode.json at the repo root, and project config has highest precedence. It also supports JSONC and a schema URL.
+
+A practical starting point:
+
+{
+  "$schema": "https://opencode.ai/config.json",
+  "autoupdate": true,
+  "server": {
+    "port": 4096
+  },
+  "permission": {
+    "bash": "ask",
+    "edit": "ask",
+    "webfetch": "allow"
+  }
+}
+
+The permissions pattern above matches the official tools/config docs.
+
+One important correction
+
+There does not appear to be a separate official “OpenCode CLI plugin” you need to hunt down for VS Code. The official IDE docs say the extension installs automatically when you run opencode in the integrated terminal. So the real flow is:
+
+install CLI → open IDE terminal → run opencode → extension installs.
+
+My recommendation for you specifically
+
+Because you like stacked orchestration and lots of moving parts, I’d do this in order:
+
+WSL install
+CLI install
+VS Code/Cursor integrated terminal auto-extension
+Desktop app
+Provider login
+MCP servers
+Project config + AGENTS.md
+SDK
+GitHub agent
+Selective ecosystem plugins
+
+That gives you the full OpenCode surface area without turning the first hour into plugin chaos.
+
+Copy-paste starter sequence
+# 1) install
+npm install -g opencode-ai
+
+# 2) enter project
+cd /path/to/project
+
+# 3) launch
+opencode
+
+# 4) inside opencode
+/connect
+/init
+
+# 5) inspect models
+opencode models --refresh
+
+# 6) add MCP
+opencode mcp add
+
+# 7) optional headless server
+opencode serve
+
+That sequence matches the official install, connect, init, models, MCP, and serve flows.
+
+If you want, I can turn this into a Windows-first step-by-step checklist specifically for your setup with WSL + VS Code/Cursor + Desktop + MCP + safe starter plugins.
+
+i dont use an IDE anymore i run opencode standalone desktop app and a modified runtime version of kilo cli i use as a node process in powershell 1/5th of the resource costs
+Thought for 5s
+
+That makes sense.
+
+You’re not looking for IDE integration at all — you’re building a standalone operator stack:
+
+OpenCode Desktop for the main interface
+modified Kilo CLI runtime as a lightweight Node process
+PowerShell as the execution surface
+lower overhead than a full editor-centered workflow
+
+That is a real advantage. VS Code-style stacks drag in a lot of extra memory, extension noise, file watchers, UI overhead, and event churn. If your Kilo runtime is already doing the job at roughly 1/5 the resource cost, keeping the system editorless is probably the right call.
+
+What your stack actually becomes
+
+Instead of:
+
+IDE → extension → agent
+
+you’re really running:
+
+OpenCode Desktop → orchestration / prompting layer
+Kilo Node runtime → task execution layer
+PowerShell → terminal/process layer
+filesystem / repo / tools → work surface
+
+That is closer to a local agent operating environment than a coding assistant.
+
+Best way to structure it
+1. Keep OpenCode as control plane
+
+Use OpenCode Desktop for:
+
+session management
+high-level tasking
+model/provider switching
+review and decision steps
+MCP tool access if useful
+
+Do not make it the heavy executor unless it has to be.
+
+2. Keep Kilo runtime as execution plane
+
+Your modified Kilo CLI can be the fast worker:
+
+spawn jobs
+manage queues
+run shell tasks
+do file ops
+call APIs
+handle retries / throttling
+keep lightweight local state
+
+That fits your “cheap node process in PowerShell” model much better than trying to force everything through a GUI.
+
+3. Use PowerShell as the substrate
+
+PowerShell becomes more than a shell. It becomes:
+
+process supervisor
+IPC bridge
+logging surface
+failover launcher
+multi-agent terminal fabric
+
+That’s especially useful if you already have accessibility or visibility preferences there.
+
+The clean architecture for your case
+
+Here’s the version I’d use.
+
+Layer A — Interface
+OpenCode Desktop
+optional second monitoring terminal
+maybe one lightweight dashboard later
+Layer B — Router / coordinator
+your modified Kilo runtime
+owns:
+task queue
+subprocess spawning
+rate limiting
+provider selection
+retries
+watchdogs
+Layer C — execution tools
+PowerShell commands
+node scripts
+git
+local Python tools
+MCP servers
+REST endpoints
+custom scripts
+Layer D — memory / state
+JSONL logs
+SQLite for sessions/tasks/events
+maybe vector memory only if it earns its keep
+What to add next
+
+Since you already stripped out the IDE, the upgrades that matter are not editor plugins. They are runtime upgrades.
+
+Highest value upgrades
+Process supervision
+
+Have a supervisor for your Kilo node workers:
+
+restart crashed workers
+detect hung jobs
+timeout stuck commands
+keep rolling logs
+expose status
+
+A tiny local supervisor buys a lot of stability.
+
+Job queue
+
+Give your runtime a real queue model:
+
+pending
+running
+retry
+failed
+completed
+blocked
+
+Even a SQLite-backed queue is enough.
+
+Structured event bus
+
+Instead of loose console text only, emit events like:
+
+{
+  "type": "task.started",
+  "task_id": "abc123",
+  "agent": "kilo-runtime-2",
+  "timestamp": "2026-04-16T14:22:00-04:00"
+}
+
+Then do the same for tool calls, retries, failures, completions, and decisions.
+
+PowerShell launcher profiles
+
+Have one-command startup for your full stack:
+
+OpenCode Desktop
+Kilo runtime workers
+MCP servers
+optional local APIs
+monitoring terminals
+
+That gives you a reproducible boot sequence.
+
+MCP bridge
+
+If OpenCode is good at tool discovery and your Kilo runtime is good at cheap execution, bridge them instead of replacing one with the other.
+
+OpenCode can be the tool-aware brain, while Kilo remains the fast hands.
+
+Logging + replay
+
+You want:
+
+raw stdout/stderr logs
+structured event logs
+task replay
+crash replay
+session export
+
+This matters more than IDE features.
+
+What not to waste time on
+
+Given your stack, I would not prioritize:
+
+IDE extensions
+LSP-heavy workflows unless you truly need diagnostics
+editor-centric plugin ecosystems
+bloated GUI wrappers around terminal functions you already control
+
+Those give less return in your setup.
+
+What probably fits you best
+
+Your actual target is something like this:
+
+Minimal high-power local stack
+OpenCode Desktop = operator console
+modified Kilo CLI runtime = low-cost worker engine
+PowerShell = process fabric
+SQLite = queue + state + logs
+JSONL event stream = audit trail
+MCP = external capability injection
+custom router = provider/runtime selection
+optional small web dashboard = health view only
+
+That is much more aligned with what you’re building than “install every plugin.”
+
+Practical next upgrades in order
+Tier 1
+supervisor
+structured queue
+task/event logging
+single-command boot script
+health checks
+Tier 2
+MCP integration
+provider/router policy
+session persistence
+crash recovery
+background worker pools
+Tier 3
+dashboard
+multi-runtime orchestration
+cross-agent verification
+checkpointing
+replay/debug tooling
+Very simple operating model
+
+You could formalize the roles like this:
+
+Component	Role
+OpenCode Desktop	command + review surface
+Kilo Runtime	execution engine
+PowerShell	terminal/process host
+SQLite	task/session state
+MCP	external tool layer
+JSONL logs	observability / replay
+My direct read
+
+You’re already past the “which IDE plugin should I install” phase.
+
+You’re in the build a lightweight agent OS phase.
+
+So the correct question is not “how do I add all upgrades?”
+It’s:
+
+which upgrades improve orchestration, reliability, and observability without destroying your resource advantage?
+
+That usually means:
+
+keep the standalone stack
+add supervision
+add queues
+add structured events
+add MCP selectively
+avoid IDE bloat
+Best next move
+
+I can map your current setup into a full standalone architecture blueprint with:
+
+process layout
+PowerShell launch structure
+OpenCode ↔ Kilo runtime role separation
+queue/state design
+logging/event schema
+MCP placement
+failover model
+
+and make it specifically for your editorless, low-resource, multi-agent workflow.
+
+Yep. That’s exactly the kind of upgrade thread that can spiral fast.
+
+## My take
+
+Before giving him **all the upgrades possible** for OpenCode:
+
+* desktop app
+* CLI plugin
+* SDK
+* MCP
+* LSP
+* every integration
+
+I would **not** do the “install everything” pass right now.
+
+Because the pattern you keep running into is:
+
+> capability expansion outruns governance and containment
+
+And you are literally in the middle of:
+
+* discovering live execution surfaces
+* tightening container architecture
+* cleaning Archivist structure
+* figuring out VPS exposure
+
+So this is a bad moment for a blanket “give me it all” upgrade wave.
+
+## Better way to do it
+
+Treat OpenCode upgrades like a controlled capability ladder.
+
+### Phase 1 — visibility and ergonomics only
+
+Safe upgrades:
+
+* desktop app setup sanity
+* CLI plugin install/update
+* config cleanup
+* theming / usability
+* logging / status visibility
+* local-only quality-of-life improvements
+
+### Phase 2 — bounded dev interfaces
+
+Maybe:
+
+* MCP, but only with a **small approved server list**
+* LSP, only if it improves code navigation and not autonomy
+* SDK docs/reference installation, but not automatic execution tooling
+
+### Phase 3 — high-power integrations
+
+Later, maybe:
+
+* browser-connected tooling
+* remote execution integrations
+* anything that increases action authority
+* anything that expands file/network reach
+
+That should be last, not first.
+
+## What I’d tell him
+
+Have him produce:
+
+### OPENCODE_UPGRADE_PLAN.md
+
+with four sections:
+
+1. **Already installed / current state**
+2. **Safe immediate upgrades**
+3. **Deferred high-risk upgrades**
+4. **Blocked until governance/containment is resolved**
+
+And make him classify each possible upgrade as:
+
+* SAFE_NOW
+* SAFE_WITH_REVIEW
+* DEFER
+* BLOCK
+
+## Why this is the right move
+
+Because “I want it all” is understandable, but in your environment that phrase often translates into:
+
+* broader authority
+* more integration surface
+* more hidden coupling
+* more places for governance to lag behind capability
+
+You already know where that road goes.
+
+## One-line summary
+
+Don’t give him **all possible OpenCode upgrades** yet.
+
+Have him give you:
+
+> **a staged OpenCode upgrade plan with capability classes, so usability can improve now without reintroducing the same governance gap you’ve been spending all day fixing.**
+Thought for 6s
+
+Yes — this is the right framing.
+
+Your version is better than “install everything” because it preserves the distinction between:
+
+capability growth
+authority growth
+governance readiness
+
+Those are not the same thing, and the failure mode is exactly what you named: capability expansion outruns containment.
+
+What you got right
+1. You changed the question
+
+Instead of:
+
+what can OpenCode do?
+
+you changed it to:
+
+what should be enabled now, in this environment, under current control conditions?
+
+That is the correct systems question.
+
+2. You separated ergonomics from power
+
+That matters a lot.
+
+Things like:
+
+config cleanup
+visibility
+logging
+UI quality-of-life
+local-only improvements
+
+are not the same risk class as:
+
+remote integrations
+expanded filesystem reach
+browser-connected tools
+agentic execution surfaces
+broad MCP exposure
+
+Grouping them together is how people accidentally blur the boundary between “nicer interface” and “more operational authority.”
+
+3. You made governance a gate, not a comment
+
+This is the strongest part.
+
+A lot of upgrade plans say “be careful with X.”
+Your plan says:
+
+some things are safe now
+some need review
+some should be deferred
+some are blocked until containment exists
+
+That is much more enforceable.
+
+I’d tighten one thing
+
+I would add one more section:
+
+Risk assumptions / exposure delta
+
+For each upgrade, force a short statement:
+
+what new authority does this add?
+what new surface does this expose?
+what monitoring exists?
+what rollback exists?
+what breaks if it misbehaves?
+
+That prevents “small install” decisions from sneaking in large authority changes.
+
+Stronger version of your classification
+
+Your labels are good. I’d just define them more sharply.
+
+SAFE_NOW
+
+Local-only, reversible, no meaningful increase in execution authority.
+
+Examples:
+
+desktop app sanity/config cleanup
+themes/accessibility
+local logging
+non-executing status panels
+documentation/reference setup
+SAFE_WITH_REVIEW
+
+Useful, bounded, but introduces a new interface or trust boundary.
+
+Examples:
+
+MCP with strict allowlist
+LSP with no autonomous actions
+SDK installed for reference or manual use
+local structured telemetry
+project-scoped config changes
+DEFER
+
+Useful later, but likely to create coupling or broaden action scope before governance is mature.
+
+Examples:
+
+multi-tool automation chains
+remote service bindings
+broad filesystem integrations
+persistent autonomous workflows
+anything that silently expands reach
+BLOCK
+
+Should not be enabled until containment, monitoring, rollback, and policy are explicit.
+
+Examples:
+
+remote execution
+browser-driving with action authority
+unrestricted MCP server use
+unattended network/file actions
+anything with hidden outbound capability
+I’d also add a gating matrix
+
+For every upgrade, require these five checks:
+
+Check	Question
+Authority	Does this let the system do something it could not do before?
+Reach	Does it expand filesystem, network, browser, or process access?
+Observability	Can you see exactly what it did?
+Reversibility	Can it be disabled or rolled back cleanly?
+Containment	If it goes wrong, is the blast radius bounded?
+
+If an upgrade fails one or more of those, it should not slide into SAFE_NOW.
+
+Best form of the document
+
+Your proposed file is good. I’d structure it like this:
+
+OPENCODE_UPGRADE_PLAN.md
+1. Current state
+what is installed now
+what is actually being used
+what is disabled
+what is partially configured
+what is unknown / unverified
+2. Safe immediate upgrades
+
+Each item should include:
+
+purpose
+authority delta
+exposure delta
+rollback
+classification
+3. Deferred upgrades
+reason deferred
+dependency for enabling later
+what governance piece is missing
+4. Blocked upgrades
+why blocked
+what must exist before reconsideration
+5. Approval criteria
+what must be true before moving from one phase to the next
+
+That last section is important because otherwise “defer” becomes “install later because we got impatient.”
+
+The core insight
+
+The phrase:
+
+“I want it all”
+
+is usually not a technical request.
+It is a boundary failure request disguised as a tooling request.
+
+Not maliciously — just structurally.
+
+Because “all upgrades” often bundles together:
+
+convenience
+visibility
+execution authority
+integration depth
+persistence
+reach
+
+Those must be separated.
+
+My direct judgment
+
+Your recommendation is sound, disciplined, and better aligned with the environment you’re actually in.
+
+I would not hand over a maximal OpenCode upgrade bundle either.
+
+I would hand over:
+
+a staged upgrade plan with explicit capability classes, authority analysis, and containment gates
+
+That keeps progress possible without recreating the same governance lag you’ve already been trying to close.
+
+Clean one-line version
+
+Use this:
+
+Do not do an “install everything” OpenCode pass. Produce a staged upgrade plan that separates ergonomics from authority, classifies each upgrade by risk, and blocks higher-power integrations until containment, observability, and rollback are in place.
+
+If you want, I can draft the actual OPENCODE_UPGRADE_PLAN.md in your style, with the classification table already filled in.
