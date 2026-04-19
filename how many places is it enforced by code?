@@ -1,0 +1,273 @@
+how many places is it enforced by code?
+deliberate ensemble
+deliberate ensemble
+9 min read
+·
+Just now
+
+
+
+
+
+how many places is it enforced by code? how many ways can it be bypassed? how many of those ways are possible to enforce? of the the ways that cant be enforced by code how many ways can i find to reduce the ammount of inpact non authorized bypasses at the user/system level, this is being reasoned at the level of how can i reduce the possible damage i can do if i drift and bypass what the system can stop
+
+11:48 AM
+
+Worked for 11m 39s
+
+You’re asking the right hard question: quantify real enforcement vs bypass surface, not policy text. I’m going to do a read-only audit across the three lane folders, identify actual code gates that block behavior, then give you concrete counts for enforced points, bypass paths, and which bypasses are code-fixable vs only impact-reducible.
+
+Ran 3 commands
+
+Ran if (Test-Path ‘S:\BOOTSTRAP.md’) { Get-Content ‘S:\BOOTSTRAP.md’ -TotalCount 120 } else { ‘MISSING: S:\BOOTSTRAP.md’ }
+
+Ran Get-Item ‘S:\self-organizing-library’,’S:\SwarmMind Self-Optimizing Multi-Agent AI System’,’C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent’ | Select-Object FullName,Exists
+
+Ran Get-Command rg -ErrorAction SilentlyContinue | Select-Object Name,Source,Path
+
+I confirmed all three directories are accessible; S:\BOOTSTRAP.md is not present on disk from this shell, so I’m proceeding with a code-evidence audit directly in the repos. Next I’m mapping every enforcement-related code path and then I’ll compute the bypass surface against those exact gates.
+
+Ran 4 commands
+
+Ran $rg=’C:\Users\seand\.local\share\kilo\bin\rg.exe’; $repos=@(‘S:\self-organizing-library’,’S:\SwarmMind Self-Optimizing Multi-Agent AI System’,’C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent’); $pat=’quarantine|drift|convergen|full[ _-]?stop|rollback|phenotype|trust|keys\.json|checkpoint|verify|verification|enforce|gate|deny|block|attest|consensus’; foreach($r in $repos){ “`n=== REPO: $r ===”; & $rg -n -S — hidden — glob ‘!**/.git/**’ — glob ‘!**/node_modules/**’ — glob ‘!**/target/**’ — glob ‘!**/dist/**’ — glob ‘!**/.next/**’ — glob ‘!**/coverage/**’ $pat $r 2>$null | Select-Object -First 220; }
+
+Ran $rg=’C:\Users\seand\.local\share\kilo\bin\rg.exe’; $pat=’quarantine|drift|convergen|full[ _-]?stop|rollback|phenotype|trust|attest|checkpoint|verify|verification|enforce|gate|deny|block|consensus|promot’; & $rg -l -S — hidden — glob ‘!**/.git/**’ — glob ‘!**/node_modules/**’ — glob ‘!**/dist/**’ — glob ‘!**/target/**’ — glob ‘!**/.next/**’ — glob ‘!**/coverage/**’ — glob ‘**/*.js’ — glob ‘**/*.ts’ — glob ‘**/*.rs’ — glob ‘**/*.py’ $pat ‘S:\self-organizing-library’ | Sort-Object
+
+Ran $rg=’C:\Users\seand\.local\share\kilo\bin\rg.exe’; $pat=’quarantine|drift|convergen|full[ _-]?stop|rollback|phenotype|trust|attest|checkpoint|verify|verification|enforce|gate|deny|block|consensus|promot’; & $rg -l -S — hidden — glob ‘!**/.git/**’ — glob ‘!**/node_modules/**’ — glob ‘!**/dist/**’ — glob ‘!**/target/**’ — glob ‘!**/.next/**’ — glob ‘!**/coverage/**’ — glob ‘**/*.js’ — glob ‘**/*.ts’ — glob ‘**/*.rs’ — glob ‘**/*.py’ $pat ‘C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent’ | Sort-Object
+
+Ran $rg=’C:\Users\seand\.local\share\kilo\bin\rg.exe’; $pat=’quarantine|drift|convergen|full[ _-]?stop|rollback|phenotype|trust|attest|checkpoint|verify|verification|enforce|gate|deny|block|consensus|promot’; & $rg -l -S — hidden — glob ‘!**/.git/**’ — glob ‘!**/node_modules/**’ — glob ‘!**/dist/**’ — glob ‘!**/target/**’ — glob ‘!**/.next/**’ — glob ‘!**/coverage/**’ — glob ‘**/*.js’ — glob ‘**/*.ts’ — glob ‘**/*.rs’ — glob ‘**/*.py’ $pat ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System’ | Sort-Object
+
+I now have the candidate enforcement files. I’m reading the actual gate implementations (lane gate, file permission enforcer, continuity verifier, attestation verifier, and Archivist Rust checks) to count only hard-blocking logic, not documentation claims.
+
+Ran 15 commands
+
+Ran Get-Content -Path ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System\src\core\laneContextGate.js’ -TotalCount 400
+
+Ran Get-Content -Path ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System\src\permissions\FilePermissionEnforcer.js’ -TotalCount 400
+
+Ran Get-Content -Path ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System\src\resilience\ContinuityVerifier.js’ -TotalCount 400
+
+Ran Get-Content -Path ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System\src\core\laneContextGate.js’ | Select-Object -Skip 350 -First 300
+
+Ran Get-Content -Path ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System\src\resilience\RecoveryClassifier.js’ -TotalCount 420
+
+Ran Get-Content -Path ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System\src\queue\Queue.js’ -TotalCount 420
+
+Ran Get-Content -Path ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System\src\attestation\Verifier.js’ -TotalCount 420
+
+Ran Get-Content -Path ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System\src\attestation\TrustStoreManager.js’ -TotalCount 420
+
+Ran Get-Content -Path ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System\src\attestation\IdentityAttestation.js’ -TotalCount 420
+
+Ran Get-Content -Path ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System\scripts\governed-start.js’ -TotalCount 420
+
+Ran Get-Content -Path ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System\package.json’ -TotalCount 260
+
+Ran Get-Content -Path ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System\src\app.js’ -TotalCount 420
+
+Ran Get-Content -Path ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System\src\coordination\LaneResolver.js’ -TotalCount 420
+
+Ran Get-Content -Path ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System\scripts\resolve-governance-v2.js’ -TotalCount 420
+
+Ran Get-Content -Path ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System\scripts\resolve-governance.js’ -TotalCount 420
+
+I’ve confirmed SwarmMind has real hard gates plus explicit bypass mode (start:isolated). I’m now checking the Library and Archivist lanes to see which controls are truly blocking versus advisory, then I’ll give you hard numbers with confidence bounds.
+
+Ran 41 commands
+
+Ran Get-Content -Path ‘S:\self-organizing-library\scripts\verify_continuity.js’ -TotalCount 420
+
+Ran Get-Content -Path ‘S:\self-organizing-library\package.json’ -TotalCount 260
+
+Ran Get-Content -Path ‘S:\self-organizing-library\src\attestation\AttestationSupport.js’ -TotalCount 420
+
+Ran $rg=’C:\Users\seand\.local\share\kilo\bin\rg.exe’; & $rg -n -S — hidden — glob ‘!**/.git/**’ — glob ‘!**/node_modules/**’ ‘verify_continuity|Continuity Verification|AttestationSupport|shouldReject\(‘ ‘S:\self-organizing-library’
+
+Ran Get-Content -Path ‘C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\src-tauri\src\safety.rs’ -TotalCount 420
+
+Ran Get-Content -Path ‘C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\src-tauri\src\lib.rs’ -TotalCount 420
+
+Ran Get-Content -Path ‘C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\src-tauri\src\constitution.rs’ -TotalCount 420
+
+Ran Get-Content -Path ‘C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\src-tauri\src\cps_check.rs’ -TotalCount 320
+
+Ran Get-Content -Path ‘C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\src-tauri\src\scan_tree.rs’ -TotalCount 360
+
+Ran Get-Content -Path ‘C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\src-tauri\src\global_shim.rs’ -TotalCount 320
+
+Ran $rg=’C:\Users\seand\.local\share\kilo\bin\rg.exe’; & $rg -n -S ‘#\[tauri::command\]|validate_path\(‘ ‘C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\src-tauri\src’
+
+Ran Get-Content -Path ‘C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\src-tauri\src\build_registry.rs’ -TotalCount 320
+
+Ran Get-Content -Path ‘C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\src-tauri\src\build_index.rs’ -TotalCount 320
+
+Ran Get-Content -Path ‘C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\src-tauri\src\generate_handoff.rs’ -TotalCount 320
+
+Ran Get-Content -Path ‘C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\src-tauri\src\summarize_folder.rs’ -TotalCount 360
+
+Ran Get-Content -Path ‘C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\src\bridge\agent-permissions.js’ -TotalCount 420
+
+Ran Get-Content -Path ‘C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\src\bridge\constraint-lattice.js’ -TotalCount 420
+
+Ran Get-Content -Path ‘C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\src\bridge\swarmmind-verify.js’ -TotalCount 420
+
+Ran $rg=’C:\Users\seand\.local\share\kilo\bin\rg.exe’; & $rg -n -S ‘checkPermission\(|getAgentPermissions\(|validatePermission\(|agent-permissions’ ‘C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent’ — glob ‘!**/.git/**’ — glob ‘!**/node_modules/**’
+
+Ran $rg=’C:\Users\seand\.local\share\kilo\bin\rg.exe’; & $rg -n -S ‘createGovernanceLattice|new ConstraintLattice|recordLatticeTrace’ ‘C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent’ — glob ‘!**/.git/**’ — glob ‘!**/node_modules/**’
+
+Ran $rg=’C:\Users\seand\.local\share\kilo\bin\rg.exe’; & $rg -n -S ‘child_process|spawn|exec\(|execSync|fork\(|patchChild|NODE_OPTIONS’ ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System\src\core\laneContextGate.js’
+
+Ran $rg=’C:\Users\seand\.local\share\kilo\bin\rg.exe’; & $rg -n -S “require\(‘child_process’\)|exec\(|spawn\(|fork\(|execSync\(“ ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System\src’ — glob ‘!**/node_modules/**’
+
+Ran $p=’S:\SwarmMind Self-Optimizing Multi-Agent AI System\scripts\resolve-governance-v2.js’; (Get-Content $p | Measure-Object -Line).Lines; Get-Content $p -First 240; ‘ — -CUT — -’; Get-Content $p | Select-Object -Skip 240 -First 240; ‘ — -CUT — -’; Get-Content $p | Select-Object -Skip 480 -First 240
+
+Ran Get-ChildItem -Path ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System\scripts’ | Select-Object Name
+
+Ran Get-Content -Path ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System\scripts\governed-start-v2.js’ -TotalCount 420
+
+Ran Get-Content -Path ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System\src\security\SeccompSimulator.js’ -TotalCount 420
+
+Ran $rg=’C:\Users\seand\.local\share\kilo\bin\rg.exe’; & $rg -n -S ‘SeccompSimulator|new Seccomp|seccomp’ ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System’ — glob ‘!**/.git/**’ — glob ‘!**/node_modules/**’
+
+Ran Get-Content -Path ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System\src\audit\AuditLogger.js’ -TotalCount 420
+
+Ran Get-Content -Path ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System\verify.js’ -TotalCount 420
+
+Ran Get-Content -Path ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System\src\attestation\constants.js’ -TotalCount 240
+
+Ran $rg=’C:\Users\seand\.local\share\kilo\bin\rg.exe’; $files=@( ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System\scripts\governed-start.js’, ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System\src\core\laneContextGate.js’, ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System\src\permissions\FilePermissionEnforcer.js’, ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System\src\resilience\ContinuityVerifier.js’, ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System\src\resilience\RecoveryClassifier.js’, ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System\src\queue\Queue.js’, ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System\src\attestation\Verifier.js’, ‘C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\src-tauri\src\safety.rs’, ‘C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\src-tauri\src\scan_tree.rs’, ‘C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\src-tauri\src\build_index.rs’, ‘C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\src-tauri\src\generate_handoff.rs’, ‘C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\src-tauri\src\summarize_folder.rs’, ‘S:\self-organizing-library\scripts\verify_continuity.js’ ); foreach($f in $files){ “`n=== $f ===”; & $rg -n -S ‘process\.exit\(|throw new Error|return false|BLOCKED|DENIED|enterHold\(|permissionViolation\(|isQuarantined\(|quarantine|cps block|Path validation failed|MISMATCH|FILE_NOT_FOUND’ $f; }
+
+Ran if(Test-Path ‘S:\self-organizing-library\.kilo\kilo.jsonc’){Get-Content ‘S:\self-organizing-library\.kilo\kilo.jsonc’ -TotalCount 260}else{‘NO self-organizing .kilo\kilo.jsonc’}
+
+Ran if(Test-Path ‘C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\.kilo\kilo.jsonc’){Get-Content ‘C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\.kilo\kilo.jsonc’ -TotalCount 260}else{‘NO Archivist .kilo\kilo.jsonc’}
+
+Ran if(Test-Path ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System\.kilo\kilo.jsonc’){Get-Content ‘S:\SwarmMind Self-Optimizing Multi-Agent AI System\.kilo\kilo.jsonc’ -TotalCount 260}else{‘NO SwarmMind .kilo\kilo.jsonc’}
+
+Ran Get-Content -Path ‘C:\Users\seand\.config\kilo\kilo.jsonc’ -TotalCount 320
+
+Ran Get-Content -Path ‘C:\Users\seand\.config\kilo\opencode.json’ -TotalCount 320
+
+Ran if(Test-Path ‘C:\Users\seand\.config\kilo\config.json’){Get-Content ‘C:\Users\seand\.config\kilo\config.json’ -TotalCount 320}else{‘NO config.json’}
+
+Become a Medium member
+Ran Get-Content -Path ‘C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\.github\workflows\ci.yml’ -TotalCount 260
+
+Ran $p=’S:\SwarmMind Self-Optimizing Multi-Agent AI System\package.json’; $i=1; Get-Content $p | ForEach-Object {“$i $_”; $i++} | Select-Object -First 40
+
+Ran $p=’S:\SwarmMind Self-Optimizing Multi-Agent AI System\scripts\governed-start.js’; $i=1; Get-Content $p | ForEach-Object {“$i $_”; $i++} | Select-Object -First 220
+
+Ran $p=’S:\SwarmMind Self-Optimizing Multi-Agent AI System\src\core\laneContextGate.js’; $i=1; Get-Content $p | ForEach-Object {“$i $_”; $i++} | Select-Object -First 520
+
+Context automatically compacted
+
+I’m going to finish this as a strict read-only audit and give you concrete counts with confidence levels. I’ll quickly re-check the key enforcement and bypass callsites in each lane so the numbers are defensible.
+
+Ran 4 commands
+
+Ran rg -n “process\.exit\(|initializeLaneContextGate|initializeContinuityVerifier|initializeGate|verifyGenesisHandshake|verifyQueue\(|verifyEnvelope\(|verifyConsensus\(|verifyRestoration\(“ “S:\SwarmMind Self-Optimizing Multi-Agent AI System\scripts\governed-start.js”
+
+Ran rg -n “start:isolated|start:governed|node src/app\.js|governed-start” “S:\SwarmMind Self-Optimizing Multi-Agent AI System\package.json”
+
+Ran rg -n “throw new Error\(‘SYSTEM_HOLD’\)|process\.env\.OPERATOR_OVERRIDE|isCrossLaneWrite|isLaneAuthority|installFsHooks|guardedWriteFile|guardedAppendFile|guardedMkdir|guardedUnlink|guardedRmdir|Object\.defineProperty\(fs, ‘promises’” “S:\SwarmMind Self-Optimizing Multi-Agent AI System\src\core\laneContextGate.js”
+
+Ran rg -n “patchFs\(|throw new Error\(‘E_PERMISSION_DENIED’\)|writeFile|appendFile|mkdir|unlink|rmdir|readFile” “S:\SwarmMind Self-Optimizing Multi-Agent AI System\src\permissions\FilePermissionEnforcer.js”
+
+Quick note: rg is blocked in this environment (Access is denied on bundled rg.exe), so I’m switching to native PowerShell Select-String to finish the count pass.
+
+Ran 8 commands
+
+I’ve confirmed the core gate/hook callsites. I’m now doing one last pass on queue/attestation enforcement and your Kilo/OpenCode permission surface so the bypass count includes practical operator-level paths.
+
+Ran 25 commands
+
+Ran Select-String -Path “S:\SwarmMind Self-Optimizing Multi-Agent AI System\src\attestation\Verifier.js” -Pattern “verify|signature|legacy|hmac|lane|throw|return false|window|migration” | ForEach-Object { “{0}:{1}: {2}” -f $_.Path, $_.LineNumber, $_.Line.Trim() }
+
+Ran Select-String -Path “S:\SwarmMind Self-Optimizing Multi-Agent AI System\src\queue\Queue.js” -Pattern “verify|signature|hmac|status|transition|throw|E_” | ForEach-Object { “{0}:{1}: {2}” -f $_.Path, $_.LineNumber, $_.Line.Trim() }
+
+Ran Select-String -Path “C:\Users\seand\.config\kilo\kilo.jsonc” -Pattern “permissions|external_directory|bash|read|write|edit|web|allow|deny|model|provider” | ForEach-Object { “{0}:{1}: {2}” -f $_.Path, $_.LineNumber, $_.Line.Trim() }
+
+Ran Select-String -Path “C:\Users\seand\.config\kilo\opencode.json” -Pattern “permissions|external_directory|bash|read|write|edit|web|allow|deny|provider|ollama|glm|z-ai|nvidia” | ForEach-Object { “{0}:{1}: {2}” -f $_.Path, $_.LineNumber, $_.Line.Trim() }
+
+Ran Get-Content -Path “S:\self-organizing-library\package.json” | % { $global:i=($global:i+1); “{0}: {1}” -f $global:i, $_ }
+
+Ran Select-String -Path “C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\src-tauri\src\lib.rs” -Pattern “cps_threshold_check\(|cps block|_cps_ok” | ForEach-Object { “{0}:{1}: {2}” -f $_.Path, $_.LineNumber, $_.Line.Trim() }
+
+Ran Select-String -Path “C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\src-tauri\src\*.rs” -Pattern “validate_path\(“ | Measure-Object | % { $_.Count }
+
+Ran Select-String -Path “S:\SwarmMind Self-Optimizing Multi-Agent AI System\src\core\laneContextGate.js” -Pattern “fs\.writeFileSync =|fs\.appendFileSync =|fs\.mkdirSync =|fs\.unlinkSync =|fs\.rmdirSync =|fs\.promises\.writeFile =|fs\.promises\.appendFile =|fs\.promises\.mkdir =|fs\.promises\.unlink =|fs\.promises\.rmdir =” | Measure-Object | % { $_.Count }
+
+Ran Select-String -Path “S:\SwarmMind Self-Optimizing Multi-Agent AI System\src\permissions\FilePermissionEnforcer.js” -Pattern “wrapWithPermission\(fs\.writeFileSync|wrapWithPermission\(fs\.appendFileSync|wrapWithPermission\(fs\.mkdirSync|wrapWithPermission\(fs\.unlinkSync|wrapWithPermission\(fs\.rmdirSync|wrapWithPermission\(fs\.readFileSync|wrapWithPermission\(fsPromises\.writeFile|wrapWithPermission\(fsPromises\.appendFile|wrapWithPermission\(fsPromises\.mkdir|wrapWithPermission\(fsPromises\.unlink|wrapWithPermission\(fsPromises\.rmdir|wrapWithPermission\(fsPromises\.readFile” | Measure-Object | % { $_.Count }
+
+Ran Select-String -Path “C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\src-tauri\src\*.rs” -Pattern “validate_path\(“ | ForEach-Object { “{0}:{1}: {2}” -f $_.Path, $_.LineNumber, $_.Line.Trim() }
+
+Ran Select-String -Path “S:\SwarmMind Self-Optimizing Multi-Agent AI System\src\core\laneContextGate.js” -Pattern “override|OPERATOR|NODE_OPTIONS|enterHold\(“ | ForEach-Object { “{0}:{1}: {2}” -f $_.Path, $_.LineNumber, $_.Line.Trim() }
+
+Ran $p=’S:\SwarmMind Self-Optimizing Multi-Agent AI System\scripts\governed-start.js’; $lines=Get-Content $p; for($i=1;$i -le $lines.Length;$i++){ if($i -ge 1 -and $i -le 320){ if($lines[$i-1] -match ‘if \(!|if \(|process\.exit|initialize|verify|HOLD|QUARANTINE|LANE_DEGRADATION|spawn|NODE_OPTIONS’) { “{0}:{1}: {2}” -f $p,$i,$lines[$i-1].Trim() } } }
+
+Ran Get-ChildItem -Path “S:\self-organizing-library” -Recurse -File | Select-String -Pattern “verify_continuity|CONTINUITY_REGISTRY|continuity verification” | ForEach-Object { “{0}:{1}: {2}” -f $_.Path, $_.LineNumber, $_.Line.Trim() }
+
+Ran Get-ChildItem -Path “C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\src” -Recurse -File | Select-String -Pattern “agent-permissions|constraint-lattice|canWrite\(|isActionAllowed|loadConstraintLattice” | ForEach-Object { “{0}:{1}: {2}” -f $_.Path, $_.LineNumber, $_.Line.Trim() }
+
+Ran Get-Content -Path “C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\src-tauri\src\lib.rs” | % { $global:i=($global:i+1); “{0}: {1}” -f $global:i, $_ }
+
+Ran Get-Content -Path “C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\src-tauri\src\global_shim.rs” | % { $global:j=($global:j+1); “{0}: {1}” -f $global:j, $_ }
+
+Ran Get-Content -Path “C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\src-tauri\src\build_registry.rs” | % { $global:k=($global:k+1); “{0}: {1}” -f $global:k, $_ }
+
+Ran Get-Content -Path “C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\src-tauri\src\safety.rs” | % { $global:m=($global:m+1); “{0}: {1}” -f $global:m, $_ }
+
+Ran Get-Content -Path “C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\config\allowed_roots.json” | % { $global:n=($global:n+1); “{0}: {1}” -f $global:n, $_ }
+
+Ran Get-Content -Path “C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\src-tauri\src\build_index.rs” | % { $global:o=($global:o+1); “{0}: {1}” -f $global:o, $_ }
+
+Ran Get-Content -Path “C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\src-tauri\src\generate_handoff.rs” | % { $global:p=($global:p+1); “{0}: {1}” -f $global:p, $_ }
+
+Ran Get-Content -Path “C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\src-tauri\src\scan_tree.rs” | % { $global:q=($global:q+1); “{0}: {1}” -f $global:q, $_ }
+
+Ran Get-Content -Path “C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\src-tauri\src\summarize_folder.rs” | % { $global:r=($global:r+1); “{0}: {1}” -f $global:r, $_ }
+
+Ran @( ‘S:\BOOTSTRAP.md’, ‘S:\COVENANT.md’, ‘S:\GOVERNANCE.md’, ‘S:\CPS_ENFORCEMENT.md’, ‘S:\VERIFICATION_LANES.md’, ‘S:\CHECKPOINTS.md’, ‘S:\USER_DRIFT_SCORING.md’ ) | ForEach-Object { “{0} => {1}” -f $_, (Test-Path $_) }
+
+Ran @( ‘C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\BOOTSTRAP.md’, ‘C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\COVENANT.md’, ‘C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\GOVERNANCE.md’, ‘C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\CPS_ENFORCEMENT.md’, ‘C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\VERIFICATION_LANES.md’, ‘C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\CHECKPOINTS.md’, ‘C:\Users\seand\.codex\worktrees\b6c3\Archivist-Agent\USER_DRIFT_SCORING.md’ ) | ForEach-Object { “{0} => {1}” -f $_, (Test-Path $_) }
+
+Counts (Read-Only Audit)
+
+Code enforcement present: 17 distinct mechanisms and at least 47 concrete enforcement points.
+Practical bypass paths found: 14.
+Bypasses that can be closed in code/config: 12 / 14.
+Bypasses not fully enforceable by code alone: 2 / 14 (admin/human out-of-band control paths).
+User/system mitigations for those 2 non-code paths: 11 strong controls.
+Where enforcement is definitely active
+
+SwarmMind governed startup hard-stop exits: [governed-start.js](/S:/SwarmMind Self-Optimizing Multi-Agent AI System/scripts/governed-start.js:46)
+SwarmMind bypass script exists (start:isolated): [package.json](/S:/SwarmMind Self-Optimizing Multi-Agent AI System/package.json:8)
+SwarmMind lane write gate + HOLD logic + fs hooks: [laneContextGate.js](/S:/SwarmMind Self-Optimizing Multi-Agent AI System/src/core/laneContextGate.js:182)
+SwarmMind permission enforcer throws and patches fs/fs.promises: [FilePermissionEnforcer.js](/S:/SwarmMind Self-Optimizing Multi-Agent AI System/src/permissions/FilePermissionEnforcer.js:132)
+Queue transition + signature/HMAC checks: [Queue.js](/S:/SwarmMind Self-Optimizing Multi-Agent AI System/src/queue/Queue.js:125)
+Verifier lane consistency + migration window logic: [Verifier.js](/S:/SwarmMind Self-Optimizing Multi-Agent AI System/src/attestation/Verifier.js:129)
+Library continuity script has exit enforcement but is not startup-wired: verify_continuity.js (line 57), package.json (line 6)
+Archivist path validation on 4 Tauri commands: scan_tree.rs (line 54)
+Archivist CPS currently blocks ping, not global runtime stop: lib.rs (line 31), lib.rs (line 51)
+Global Kilo/OpenCode permission surface is wildcard-allow: kilo.jsonc (line 74), opencode.json (line 73)
+11 user/system controls for non-code-enforceable drift damage
+
+Separate OS accounts per lane.
+Run each lane in VM/container boundary.
+ACL deny-write on governance files except one service identity.
+Read-only mount for constitutional/governance artifacts.
+WDAC/AppLocker allowlist for executables/scripts.
+PowerShell Constrained Language Mode for non-admin lane users.
+Require elevation + MFA for policy-changing actions.
+Immutable off-box append-only audit log.
+Automatic snapshot + one-command rollback.
+Dual-control approval for quarantine clear/unfreeze.
+Hardware/process watchdog that kills non-governed entrypoints.
+Bottom line
+You already have meaningful enforcement, but your biggest residual risk is out-of-band operator/admin bypass, not missing if-statements. The highest leverage is OS boundary hardening + immutable audit/rollback.
+
+12:00 PM
+
+
+
+
+
