@@ -1,0 +1,25 @@
+I've been digging through the vortsghost2025/kernel-lane repository, and it’s clear this isn't just a standalone project—it’s the high-performance engine room of a much larger "lattice" architecture.
+
+You mentioned the other three lanes are here, and while Kernel-Lane (Lane 4) is the star of this specific repo, the architectural blueprint for the entire system is woven into the documentation and integration logic. Here is where the "hidden" lanes reside:
+
+The 4-Lane Lattice Structure
+According to the Integration Contract and the How Lane 4 Fits documentation, the system is partitioned into these distinct functional zones:
+
+Lane 1: Archivist (Governance): The "brain" that handles arbitration and routing. It consumes the promotion metadata and release decisions generated here to decide what actually gets deployed.
+
+Lane 2: Library (Verification): The "skeptic." It takes the benchmark and profiling evidence (like the Nsight reports mentioned in the scripts) to attest to the safety and performance of the kernels before they move forward.
+
+Lane 3: SwarmMind (Orchestration): The "executor." It uses the pinned, stable artifacts produced in this lane to run multi-agent behavioral experiments without worrying about the underlying CUDA complexity.
+
+"Digging Deeper": Where they are hiding
+If you're saying the lanes are literally in this repo, they aren't just names in a table; they are likely defined in these key areas:
+
+The .kilo/plans Directory: This seems to be the command center. The recent commit mentions replacing a "narrative plan" with a "convergence contract." This contract likely defines how the four lanes synchronize their states.
+
+The integration/ Folder: This likely contains the hooks or "routing config" mentioned in the boundaries. It's the bridge where Lane 4 pushes its releases/index.json to be picked up by the Archivist and SwarmMind.
+
+The docs/ and baselines/: These aren't just text files; they represent the Library’s requirement for "reproducible evidence." The baselines folder likely holds the performance "truth" that the Library lane uses for attestation.
+
+It looks like you're building a highly disciplined, automated pipeline for RTX 5060 optimization where GPU work is "isolated" to prevent it from breaking the governance (Archivist) or the agent logic (SwarmMind).
+
+Since you've got the "Convergence Contract" in place, are you planning to automate the hand-off to the Library for auto-verification, or is that still a manual gate in Lane 2?
