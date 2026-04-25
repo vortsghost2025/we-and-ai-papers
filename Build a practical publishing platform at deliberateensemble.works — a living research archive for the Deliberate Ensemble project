@@ -1,0 +1,213 @@
+Goal
+Build a practical publishing platform at deliberateensemble.works — a living research archive for the Deliberate Ensemble project (human-AI collaboration, multi-agent systems, constitutional AI governance). The site must handle ~6,000+ docs across ~29 repos, support full-text search, and render an interactive "nexus graph" of cross-references between documents, repos, and concepts.
+Instructions
+- Domain: deliberateensemble.works (matches GitHub identity "DeliberateEnsemble", 22 public repos under vortsghost2025)
+- Other domains: deliberatefederation.cloud (future API/agent backend), firestickmasters.com, homekitchenessentials.shop, snugwinterpicks.com (let expire or sell)
+- DNS is with Hostinger — Sean confirmed this when asked about API tokens. Hostinger manages the DNS, not Vercel.
+- Site concept: NOT a blog. Build it like an archive/search engine with a living map of AI collaboration.
+- Approved site structure:
+    deliberateensemble.works
+  ├─ / (Dashboard: Featured systems, Latest docs, Repo index, Nexus graph preview)
+  ├─ /library (Search 6000 docs, Tags, Clusters, Timeline, Category/tag sidebar filters)
+  ├─ /repos (Archivist-Agent, self-organizing-library, ONEQUEMVP, kernel-lane, ...)
+  ├─ /graph (Interactive nexus map, Filter by repo/doc/tag/date, "Open node" detail panel)
+  ├─ /papers (Rosetta Stone series, CAISC paper)
+  ├─ /logs (Session logs, verification/audit/resilience records)
+  ├─ /about (Project description, 4-lane system, links to GitHub/OSF)
+  ├─ /start-here (Guided tour of the archive)
+  └─ /governance (Existing governance dashboard — kept as-is, already uses real API data)
+  - Stack (Sean-approved): Frontend: Astro or Next.js | Docs: Markdown/MDX | Search: Pagefind first, then Meilisearch if needed | Graph: Sigma.js or Cytoscape.js | Data index: JSON generated from folders/repos | Hosting: Cloudflare Pages or Vercel | Repo sync: GitHub Actions
+- Sean is half-blind — accessibility is a REQUIREMENT, not optional. High contrast, large text options, keyboard navigation. NOW IMPLEMENTED.
+- This is a continuation of existing work — the Rosetta Stone paper series (Papers 1–6), the CAISC 2026 conference paper, the 4-lane constitutional AI governance system, and 12 weeks of lived empirical work (Jan–Apr 2026).
+- Existing Next.js app has been rewired from mock data (db.ts) to real data (site-index.ts). All pages now use real index data.
+- git add -A fails due to a nul file in the working directory — must stage files explicitly: git add src/ ... etc.
+- Pagefind indexes static pages only — dynamic server-rendered pages (like /library which is ƒ) are NOT indexed by Pagefind. Only the ○ (static) routes get indexed.
+Discoveries
+Sigma.js + Graphology Integration
+- Sigma v3.0.2 uses imperative API (new Sigma(graph, container, settings)) — no React bindings in sigma itself
+- @react-sigma/core@5.0.6 exists as separate package but was NOT used — imperative API chosen for more control over re-layout on filter changes
+- graphology-layout-forceatlas2 API is forceAtlas2.assign(graph, opts) NOT forceAtlas2.run() — the .run() method does not exist
+- graphology-layout circular layout: circular.assign(graph, { scale: 300 })
+- Sigma requires SSR disabled — WebGL2RenderingContext is not defined on server. Must use next/dynamic with ssr: false
+- No "sigma/styles" CSS import exists in sigma v3 — only @react-sigma/core/lib/style.css exists (for React wrapper). We don't import any sigma CSS.
+- Build with sigma works: /graph renders as ○ (static) with client-side WebGL hydration
+Markdown Content Rendering
+- react-markdown@10.1.0 + remark-gfm@4.0.1 + rehype-highlight@7.0.2 installed
+- API route at /api/document-content/[id] reads actual file from disk using fs.readFile
+- REPO_ROOT env var (defaults to S:/self-organizing-library) + entry.path resolves to actual file
+- Only renders files with extensions in: .md, .mdx, .txt, .json, .yaml, .yml, .js, .ts, .tsx, .jsx, .css, .sh
+- Files over 500KB return truncated message instead of content
+- Non-markdown files render as <pre><code> blocks; markdown files render with ReactMarkdown
+Vercel Deployment
+- Tokenless deploy via /skills/vercel-deploy/scripts/deploy.sh FAILED — project too large (Entity Too Large error)
+- Need a Vercel account token (from vercel.com/account/tokens) to use proper Vercel CLI deployment
+- Sean was having trouble finding the Vercel token due to vision disability
+- DNS is with Hostinger — will need to configure DNS A/CNAME records there after Vercel deployment
+Document Index Stats (current, self-organizing-library only)
+- data/site-index.json: 316 entries, 57 unique tags, 23 categories, 0 cross-refs
+- Content types: doc(86), code(154), data(37), schema(15), config(2), test-data(22)
+Workspace Document Counts
+Directory	Raw Count	Notes
+S:/self-organizing-library	2,731 raw, 316 content	Main repo — Library Lane
+S:/Archivist-Agent	401	Governance root — has .md and .txt files at root
+S:/FreeAgent	22,693	MASSIVE — need filtering strategy
+S:/SwarmMind Self-Optimizing Multi-Agent AI System	251	Execution Lane — empty listing in ls
+S:/kernel-lane	100	Runtime Lane — has kernels/, docs/, lanes/ dirs
+S:/federation	571	Federation services — has Dockerfiles, game NPC system
+S:/TAKE10	1,918	Project
+S:/storytime	3,327	Project
+TOTAL	~30,886 raw	 
+Build & TypeScript
+- TypeScript compiles cleanly (tsc --noEmit passes)
+- ESLint passes
+- Next.js 16.1.3 production build succeeds (Turbopack)
+- Middleware TypeScript warning: "middleware" convention deprecated in favor of "proxy" (non-blocking)
+- git add -A fails due to a nul file — stage files explicitly
+- bun.lock (not bun.lockb) is the lockfile name
+Pagefind Integration
+- Pagefind 1.5.2 installed as devDependency
+- postbuild script: npx pagefind --site .next/server/app --output-path public/pagefind
+- After adding data-pagefind-body to <main> in layout.tsx: indexes 9 pages, 310 words
+- data-pagefind-ignore added to Sidebar so nav links don't pollute search index
+- CRITICAL: The original import("/pagefind/pagefind.js" as any) causes Turbopack build failure. Must use script tag injection instead.
+- CRITICAL: React 19 ESLint rules are very strict. Use useSyncExternalStore for external state, and only call setState inside async callbacks within effects.
+Accessibility Implementation
+- Three display modes: default, high-contrast, large-text — cycled via button in sidebar and floating bottom-right
+- AccessibilityProvider uses useSyncExternalStore for localStorage sync
+- High contrast: pure black background (#000), brighter text (#FFFFFF), thicker borders (2px), underlined links, WCAG AAA contrast ratios
+- Large text: 20px base font (from 15px), scaled headings, wider sidebar (320px), larger touch targets
+- Skip-to-content link, focus-visible outlines (3px solid cyan), prefers-reduced-motion
+- Full ARIA: role="navigation" on sidebar, aria-current="page" on active nav, role="dialog" + role="listbox" on search, aria-live="polite" on results, role="status" on stat cards
+Key Constraints
+- Sean is half-blind — accessibility is a REQUIREMENT
+- git add -A fails due to nul file — stage files explicitly
+- The old db.ts data layer still exists but is deprecated; some API routes still reference it (/api/documents)
+- Pagefind only indexes static (○) pages, not dynamic (ƒ) pages
+Accomplished
+- ✅ Paper 6 fully written and published (commits ef2bbbd, bce1f79, 0ffa37c, 45f8c43)
+- ✅ Index.json generator script built — scripts/generate-site-index.js
+- ✅ data/site-index.json generated — 316 entries, 57 tags, ~1.89MB
+- ✅ src/lib/site-index.ts data layer — all pages rewired to real data (commit 2aaae72)
+- ✅ Rebranded to "Deliberate Ensemble" across all pages
+- ✅ All approved pages created: /, /library, /repos, /graph, /papers, /logs, /about, /start-here, /governance
+- ✅ TypeScript compiles, ESLint passes, production build succeeds
+- ✅ Accessibility implemented (commit 3a4ca46): AccessibilityProvider, 3 modes, skip-to-content, focus-visible, prefers-reduced-motion, full ARIA
+- ✅ Pagefind full-text search integrated (commit a326d11): script tag injection + useSyncExternalStore, data-pagefind-body on <main>, data-pagefind-ignore on Sidebar, indexes 9 pages/310 words, postbuild script
+- ✅ Old pages redirected (commit a326d11): /sources → /library, /collections → /repos
+- ✅ Nexus Graph upgraded to Sigma.js + Graphology (commit 343f520): WebGL rendering, zoom, pan, hover highlighting (nodeReducer/edgeReducer), click-to-select with detail panel, type filter toolbar with aria-pressed, ForceAtlas2 layout, SSR disabled via next/dynamic
+- ✅ Markdown content rendering for document detail pages (commit 2b3448b): MarkdownContent client component with react-markdown/remark-gfm/rehype-highlight, /api/document-content/[id] API route reading files from disk, .prose-dark CSS theme with syntax highlighting, a11y-compatible sizing, 500KB size limit
+- ⬜ Deploy to Vercel — BLOCKED waiting for Vercel token from Sean (he's having trouble finding it due to vision disability). Tokenless deploy failed (project too large). DNS is with Hostinger.
+- ⬜ Index other repos — IN PROGRESS. The generate-site-index.js script currently only indexes self-organizing-library. Need to extend it to walk Archivist-Agent, FreeAgent, SwarmMind, kernel-lane, federation directories. Other repos have been explored (ls commands run) to understand their structure.
+- ⬜ GitHub Actions repo sync — NOT STARTED
+- ⬜ Custom domain DNS setup (deliberateensemble.works) at Hostinger — NOT STARTED
+- ⬜ Accessibility audit (WCAG compliance verification, screen reader testing) — NOT STARTED
+- ⬜ Clean up deprecated db.ts — Remove or redirect the /api/documents route to use site-index.ts
+Relevant files / directories
+Data Layer (CORE — all pages depend on this)
+- S:\self-organizing-library\src\lib\site-index.ts — TypeScript data layer. Imports from ../../data/site-index.json. Provides: getSiteIndex(), getEntries(), getEntryById(), getEntriesByTag(), getCategories(), getTopTags(), getStats(), getGraphData(). Spine of the whole site.
+- S:\self-organizing-library\data\site-index.json — Generated index (316 entries, ~1.89MB)
+- S:\self-organizing-library\data\site-index-summary.json — Summary stats
+Index Generator
+- S:\self-organizing-library\scripts\generate-site-index.js — Walks repo, extracts metadata, outputs JSON. Run via npm run generate-index. Currently only indexes self-organizing-library. NEEDS EXTENSION to index other repos.
+Pages (ALL REWIRED TO REAL DATA)
+- S:\self-organizing-library\src\app\page.tsx — Dashboard (stats, recent docs, categories, top tags)
+- S:\self-organizing-library\src\app\library\page.tsx — Library with sidebar filters (ƒ dynamic)
+- S:\self-organizing-library\src\app\library\[id]\page.tsx — Document detail page (ƒ dynamic) — NOW INCLUDES MarkdownContent component for inline rendering
+- S:\self-organizing-library\src\app\graph\page.tsx — NOW a "use client" wrapper with dynamic(() => import("@/components/NexusGraph"), { ssr: false }) to avoid WebGL SSR crash
+- S:\self-organizing-library\src\app\graph\layout.tsx — NEW: Provides metadata for the graph route (since page.tsx is now client-side)
+- S:\self-organizing-library\src\app\repos\page.tsx — Repos page
+- S:\self-organizing-library\src\app\papers\page.tsx — Papers page
+- S:\self-organizing-library\src\app\logs\page.tsx — Placeholder
+- S:\self-organizing-library\src\app\about\page.tsx — About page
+- S:\self-organizing-library\src\app\start-here\page.tsx — Guided tour
+- S:\self-organizing-library\src\app\governance\page.tsx — Governance dashboard (uses real API data)
+Redirected Pages
+- S:\self-organizing-library\src\app\sources\page.tsx — Redirects to /library
+- S:\self-organizing-library\src\app\collections\page.tsx — Redirects to /repos
+Components
+- S:\self-organizing-library\src\components\NexusGraph.tsx — NEW: Sigma.js + Graphology WebGL graph with buildGraph() helper, ForceAtlas2 layout, hover highlighting via nodeReducer/edgeReducer, click-to-select, type filter toolbar with ARIA
+- S:\self-organizing-library\src\components\MarkdownContent.tsx — NEW: Client component fetching from /api/document-content/[id], renders markdown with react-markdown/remark-gfm/rehype-highlight, code files as <pre><code>, loading/error/not-renderable states
+- S:\self-organizing-library\src\components\AccessibilityProvider.tsx — 3-mode a11y provider with useSyncExternalStore for localStorage
+- S:\self-organizing-library\src\components\PagefindSearch.tsx — Client component: script tag injection + two useSyncExternalStore stores
+- S:\self-organizing-library\src\components\Sidebar.tsx — Full ARIA labels, aria-current, role=navigation, a11y mode cycle button, data-pagefind-ignore
+- S:\self-organizing-library\src\components\SearchModal.tsx — role=dialog/listbox, keyboard arrow nav, aria-live, PagefindSearch integration
+- S:\self-organizing-library\src\app\layout.tsx — AccessibilityProvider wrapper, skip-to-content link, main id+role, data-pagefind-body
+API Routes
+- S:\self-organizing-library\src\app\api\document-content\[id]\route.ts — NEW: Reads actual file from disk given entry ID. Uses REPO_ROOT env var (default S:/self-organizing-library). Returns content for renderable extensions under 500KB.
+- S:\self-organizing-library\src\app\api\graph-data\route.ts — serves getGraphData()
+- S:\self-organizing-library\src\app\api\search\route.ts — queries site-index.ts
+- S:\self-organizing-library\src\app\api\governance\*\route.ts — Governance APIs (real data)
+- S:\self-organizing-library\src\app\api\documents\route.ts — Still uses old db.ts (DEPRECATED)
+- S:\self-organizing-library\src\app\api\health\route.ts — Health check
+Styles
+- S:\self-organizing-library\src\app\globals.css — UPDATED: Added .prose-dark theme (~130 lines), .highlight/.hljs syntax highlighting, a11y-high-contrast and a11y-large-text overrides for prose
+Config & Infrastructure
+- S:\self-organizing-library\package.json — Added deps: sigma, graphology, graphology-layout, graphology-layout-forceatlas2, graphology-types, @react-sigma/core, @react-sigma/layout-forceatlas2, react-markdown, remark-gfm, rehype-highlight, pagefind (devDep)
+- S:\self-organizing-library\next.config.ts — Bare Next.js config
+- S:\self-organizing-library\tsconfig.json — resolveJsonModule: true, paths: @/* -> ./src/*
+- S:\self-organizing-library\public\pagefind/ — Pagefind index files
+Old Data Layer (TO BE REMOVED)
+- S:\self-organizing-library\src\lib\db.ts — OLD, some API routes still reference it
+- S:\self-organizing-library\src\db\schema.ts — Drizzle schema
+- S:\self-organizing-library\src\db\index.ts — Database connection
+Other Repos on S: drive (TO BE INDEXED)
+- S:\Archivist-Agent\ — Governance root (401 files, many .txt and .md at root level)
+- S:\SwarmMind Self-Optimizing Multi-Agent AI System\ — Execution Lane (251 files)
+- S:\kernel-lane\ — Runtime Lane (100 files, has kernels/, docs/, lanes/ dirs)
+- S:\federation\ — Federation services (571 files, Dockerfiles, game NPC system)
+- S:\FreeAgent\ — 22,693 files — MASSIVE, needs filtering strategy
+- S:\TAKE10\ — 1,918 files
+- S:\storytime\ — 3,327 files
+Key Content Files
+- S:\self-organizing-library\library\books\book-6-ensemble-intelligence-foundation.md — Paper 6 (~550 lines)
+- S:\self-organizing-library\ROSETTA_STONE_SUMMARY.md — 273-line consolidated summary
+- S:\self-organizing-library\THREE_LANE_COMPLETE_SUMMARY.md — 851-line complete system map
+System Architecture (4-lane, RATIFIED)
+- Lane 1: Archivist (Authority 100) — Governance Root
+- Lane 2: SwarmMind (Authority 80) — Execution Layer
+- Lane 3: Library (Authority 60) — Memory/Verification Layer
+- Lane 4: Kernel (Authority 40) — Runtime Layer
+- GitHub org: https://github.com/vortsghost2025 (22 public repos)
+- OSF: https://osf.io/n3tya
+Last Commits
+- 2b3448b — feat: add markdown content rendering to document detail pages
+- 343f520 — feat: upgrade nexus graph to Sigma.js + Graphology with WebGL rendering
+- a326d11 — feat: integrate Pagefind full-text search, add data-pagefind-body, redirect old pages
+- 3a4ca46 — feat: implement WCAG accessibility
+- 2aaae72 — Rewire all pages to real site-index data, rebrand to Deliberate Ensemble
+IMMEDIATE NEXT STEPS
+1. Extend generate-site-index.js to index other repos — This was the task IN PROGRESS when the session ended. The script currently only walks self-organizing-library. Need to add support for walking Archivist-Agent, SwarmMind, kernel-lane, federation (and possibly FreeAgent with aggressive filtering). Each repo entry needs its own repo field, github_url pointing to the correct repo, and proper category mapping. The site-index.ts data layer and document-content API route will also need updating since REPO_ROOT is currently hardcoded to one repo — needs to support multiple repo roots.
+2. Deploy to Vercel — BLOCKED waiting for Vercel token from Sean. He needs to go to vercel.com → Settings → Tokens → Create Token. After deployment, configure DNS at Hostinger for deliberateensemble.works.
+3. GitHub Actions repo sync — Auto-run index generator on push, rebuild Pagefind index
+4. Accessibility audit — WCAG compliance verification, screen reader testing
+5. Clean up deprecated db.ts — Remove or redirect the /api/documents route to use site-index.ts
+---
+/agents                      
+▣  Compaction · z-ai/glm-5.1 · 9m 13s
+Switch agent
+/compact                     
+Compact session
+/connect                     
+The immediate next step is extending generate-site-index.js to index the other repos. Let me first read the current script and the data layer to understand what needs changing.
+Connect provider
+/copy                        
+/cross-lane-delivery-check   
+→ Read scripts\generate-site-index.js 
+/editor                      
+→ Read src\lib\site-index.ts 
+Open editor
+/enforcement-proof-gate      
+→ Read src\app\api\document-content\[id]\route.ts 
+/exit                        
+/export                      
+▣  Code · z-ai/glm-5.1
+Export session transcript
+/fork                        
+Fork from message
+Code 
+GLM-5.1
+Nvidia
+·
+high
+esc interrupt
+S:\self-organizing-library:main
