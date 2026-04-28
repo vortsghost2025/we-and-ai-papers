@@ -1,0 +1,106 @@
+FreeAgent Project Separation Audit — Source-of-Truth Edition
+Workspace: S:\FreeAgent  
+Reference Repo: S:\Deliberate-AI-Ensemble (clone of vortsghost2025/Deliberate-AI-Ensemble)  
+Audit Date: 2026-04-27  
+Status: READ-ONLY analysis complete; Phase 1 extraction planning ready for approval
+---
+Governance Correction Applied
+- Recency ≠ Authority: FreeAgent's 365 commits (Apr 22) vs Deliberate's 1 commit (Apr 3) does not make FreeAgent the public-source-of-truth.
+- Distinction Enforced:
+  - FreeAgent = active runtime/orchestration implementation source (where code executes)
+  - Deliberate-AI-Ensemble = public archive/research/site source (where published materials live)
+  - WE4Free papers/resources = public-impact and research artifacts (not automatically FreeAgent runtime)
+- Lane Authority: The 4-lane lattice governance (Dual Verification Protocol) holds supra-repository authority across both codebases.
+---
+Part 1: Source-of-Truth Matrix
+Domain / Artifact Cluster	Current Location (FreeAgent)	Runtime Source of Truth	Public / Citation Source of Truth	Governance Authority	Deployment Authority	Extraction Target (Repo)
+Agent orchestration runtime	orchestrator/, agents/, AGENT_COORDINATION/	orchestrator/orchestrator.js, agents/*.py execute coordination	None (internal code only)	AGENTS.md (workspace rules), docs/DUAL_VERIFICATION_PROTOCOL.md, SAFETY_INVARIANTS.md	Local execution via live_trading.py or cockpit; no external deployment	freeagent-core (CORE‑COUPLED per DEPENDENCY_GRAPH)
+Trading bot specific logic	trading_handler.py, live_trading.py, continuous_trading.py, agents/ (risk, executor, analyzer, backtester, data_fetcher, monitor)	live_trading.py entry point; agents package	None (proprietary strategies, not published)	SAFETY_INVARIANTS.md, agents/architecture/04_SAFETY_ARCHITECTURE.md	Local execution only; no automated external deployment	freeagent-core (CORE‑COUPLED)
+WE4Free mental health resources (crisis lines, content)	we4free_website/resources.html (embedded tables), we4free_website/index.html, config_*.json, we4free_global/configs/	Static HTML/JS served from we4free_website/, built by we4free_global/build.js from JSON configs	Live: https://deliberateensemble.works (https://deliberateensemble.works) /resources.html; Sources: official government/health URLs cited inline	we4free_global/COUNTRY_ONBOARDING.md, DEPLOYMENT_GUIDE.md; constitutional principle LAYER_0_THE_GIFT.md	deploy_website.ps1 pushes to Hostinger; GitHub Pages for global templates	we4free-web (target repo)
+WE4Free platform/template system (PWA builder)	we4free_global/build.js, deploy.js, validate.js, templates/, schemas/	we4free_global/build.js Node.js transforms config JSON → PWA; zero runtime deps on core	Research DOI: 10.17605/OSF.IO/N3TYA; README documents usage; deployed Canada proof	we4free_global/README.md, DEPLOYMENT_GUIDE.md, COUNTRY_ONBOARDING.md	CLI: node build.js <config>; deploy.js for GitHub Pages/Netlify	federation-creative (already staged in _extracted/federation-creative/)
+WE4Free public website (deliberateensemble.works)	we4free_website/ (index.html, resources.html, sw.js, manifest.json, icons, .htaccess)	Static files served by Hostinger; PWA offline via service worker cache	Primary public site: https://deliberateensemble.works (https://deliberateensemble.works) (frontend); data from cited official providers	Same as mental health resources; constitutional safety disclaimers embedded in HTML	deploy_website.ps1 (PowerShell + pscp/plink) to Hostinger; GitHub Pages for multi-country	we4free-web (target repo)
+Medical demo system	medical/, phase-6/medical_data_poc/	medical/symptom_checker.py CLI; safe_analysis.py wrapper; synthetic data pipeline	Not published (synthetic-only POC; no PHI released)	medical/README.md, medical/install/*.md (safety docs), SAFETY_INVARIANTS.md	Local scripts only; no automated deployment	medical-demos (per extraction plan)
+Nexus Graph / document index (runtime fragments)	we4free_global/mesh-coordinator.js, swarm-registry.js, mesh-*.js	mesh-coordinator.js (393 lines) implements WebRTC mesh + gossip indexing; swarm-registry.js tracks node registrations	Not published as standalone product; docs-only (docs/FEDERATION_*) for specification	docs/FEDERATION_COORDINATOR_SPEC.md, docs/GOVERNANCE_LAYER_SPEC.md	Part of runtime when federation features used; no standalone deployment	Specs: freeagent-core; Runtime fragments: we4free-mesh or federation-creative
+Governance documents (AGENTS.md, SAFETY_INVARIANTS, CONSTITUTIONAL protocols)	AGENTS.md, SAFETY_INVARIANTS.md, docs/DUAL_VERIFICATION_PROTOCOL.md, docs/GOVERNANCE_LAYER_SPEC.md, CONSTITUTIONAL_*	Governance rules consumed by orchestrator and agents; enforced via code checks (safety invariants)	None (internal policy documents)	Supra-repository authority: Lane lattice (4-lane system) overrides repo boundaries	Embedded in code; no separate deployment	freeagent-core (stay with core runtime)
+Dual Verification Protocol (lanes L/R)	docs/DUAL_VERIFICATION_PROTOCOL.md, docs/VERIFICATION_TIER_SPEC.md	Spec expected in runtime: cockpit/services/dualVerifier.js (conceptual), orchestrator integration	Not published (internal safety protocol)	docs/DUAL_VERIFICATION_PROTOCOL.md + docs/GOVERNANCE_LAYER_SPEC.md decision matrix	Part of runtime governance; no standalone deployment	freeagent-core (core safety guarantee)
+Shared infrastructure (ci/, scripts/, utils/, tools/)	ci/, scripts/, utils/, tools/ + staged in _extracted/shared-infra/	PowerShell/Python/Node scripts; CI/CD; utility libs (CoinGecko, KuCoin validator, PR tools)	None (internal DevOps tooling)	ci/README-CI.md, tools/README.md, inline headers	Run manually or in CI pipelines; deploy_website.ps1 separate utility	shared-infra (already extracted)
+Federation game / simulation	federation-game/, DISTRIBUTED_MICROSERVICES_UNIVERSE/weather-server/	Web-based HTML/JS simulation; Python tech tree generation	Not published (internal fun/prototype)	FEDERATION_GAME_TECHNOLOGY_README.md, FEDERATION_GAME_NPC_GUIDE.md	Open in browser; no server deployment needed	federation-creative (already extracted)
+Cockpit UI / dashboard	cockpit/ + cockpit/ui/ (Next.js React app)	cockpit/server.js (Node backend), cockpit/orchestrator.js (runtime loop), cockpit/ui/ (frontend)	Not published (internal operator interface)	FREEAGENT_COCKPIT_BLUEPRINT.md, COCKPIT_ORCHESTRATION_LAYER.md	Local run: npm start on port 4000; connects to core services via WebSocket/HTTP	Likely freeagent-core (not explicitly extracted; coupled)
+Research papers (PAPER_*.md, Rosetta Stone)	PAPER_A_*.md, PAPER_B_*.md, PAPER_C_*.md, WE4FREE/papers/exports/ (PDFs, HTML, DOCX)	Not runtime — research documentation	Primary citation source: OSF.IO DOI: 10.17605/OSF.IO/N3TYA; static copies in repo	Academic authorship: Sean (primary), Claude (Anthropic) as collaborative tool; peer-review engaged	Published via OSF; static copies stored in repo and on web server (deliberateensemble.works)	Unclear — could be research-papers new repo OR remain in Deliberate-AI-Ensemble; no extraction plan yet
+Deployment scripts (deploy_website.ps1, ci/)	deploy_website.ps1, ci/ (Azure VM setup, PR templates)	PowerShell scripts executed manually; CI pipelines in Azure/GitHub	Not published (internal ops)	ci/README-CI.md, inline script comments	deploy_website.ps1 run manually; CI scripts run in pipelines	deploy_website.ps1 → we4free-web; ci/ → shared-infra (already extracted)
+Memory substrate	docs/MEMORY_SUBSTRATE_SPEC.md; orchestrator/memory.js, data/memory/, cockpit/memory.js, medical/memory/	orchestrator/memory.js (vector store), data/memory/* (persistent JSON), SQLite per spec (path TBD)	Spec document only; not published externally	docs/MEMORY_SUBSTRATE_SPEC.md defines protocol; implementations must conform	Initialized on startup; no separate deployment; persistence via filesystem/SQLite	freeagent-core (core data layer; cannot be separated)
+Test suites	tests/, root test_*.js, medical/tests/, tools/test_import_*.py	Executed by pytest (Python) or node (JavaScript); CI runs automatically	Not published (internal QA)	Test expectations define correct behavior; implicitly part of spec	Run locally or in CI (ci/ config)	Tests should co-move with their respective modules (standard practice)
+---
+Part 2: Human Decision Register
+#	Decision Needed	Domain	Evidence	Blocker Status	Recommended Options
+H-01	Canonical governance repository — Where does the 4-lane lattice authority reside?	Governance	AGENTS.md duplicated (medical/AGENTS.md identical copy); SAFETY_INVARIANTS.md, DUAL_VERIFICATION_PROTOCOL.md single-source	CRITICAL — governance fragmentation risks divergent lane enforcement	Options: (a) Designate FreeAgent as governance root; require all repos to vendor sync; (b) Extract governance into separate governance-auth repo; (c) Publish governance as npm/Python package consumed by all
+H-02	FreeAgent core extraction strategy — Extract to freeagent-core monorepo or keep bundled?	Runtime architecture	DEPENDENCY_GRAPH.md lines 55, 60 shows freeagent-core as distinct node; all other repos CORE‑COUPLED to it	CRITICAL — defines boundary between orchestrator and applications	Options: (a) Keep all core in FreeAgent monorepo, extract apps only; (b) Extract core as standalone freeagent-core with strict API; (c) Hybrid: keep agents/ in FreeAgent, extract other layers
+H-03	Trading bot product boundary — Is trading a first-class product or internal module?	Business logic	00_START_HERE.md frames trading bot as primary deliverable; PROJECT_SUMMARY.md emphasizes production-ready status	HIGH — affects whether trading gets separate repo or stays in FreeAgent	Options: (a) Trading stays in FreeAgent core (current); (b) Extract to trading-bot repo with FreeAgent as dependency; (c) Split into trading-engine + trading-ui
+H-04	Medical PHI audit — Is medical_data_poc/ truly PHI‑free?	Security / compliance	EXTRACTION_READINESS_REPORT.md line 21 flags "possible PHI"; medical/docs/FINAL_EXECUTION_PACKAGE.md says "NO PHI inference" but synthetic data may still contain re-identifiable patterns	HIGH — PHI breach has legal/ethical consequences	Options: (a) Third-party audit required before any move; (b) Redact/replace synthetic data with fully de‑identified set; (c) Keep medical in FreeAgent indefinitely as demo
+H-05	Nexus Graph architecture ownership — Is the mesh indexing protocol part of core or mesh layer?	Federation protocol	we4free_global/mesh-coordinator.js implements Nexus Graph; depends on /api/services/mesh-signal (core API); but docs (docs/FEDERATION_COORDINATOR_SPEC.md) define protocol at governance layer	MEDIUM — determines whether Nexus lives in freeagent-core or we4free-mesh repo	Options: (a) Nexus is core governance artifact → live in freeagent-core/docs/ + runtime in federation-creative; (b) Nexus is mesh implementation detail → live entirely in we4free-global (mesh); (c) Split: protocol spec in core, implementation in mesh
+H-06	Cockpit UI extraction — Extract as standalone UI service or keep with core?	UI/UX layer	cockpit/ is 498 files, independent Node.js server; connects to core via HTTP/WebSocket on localhost:4000; not referenced by other apps	MEDIUM — cockpit provides operator interface but could be decoupled	Options: (a) Keep cockpit bundled with FreeAgent core (current); (b) Extract to freeagent-cockpit with core as dependency; (c) Merge cockpit into we4free-web as unified dashboard
+H-07	Memory substrate migration plan — How to extract without breaking persistence?	Data layer	orchestrator/memory.js uses filesystem JSON; spec (docs/MEMORY_SUBSTRATE_SPEC.md) defines 6-layer model; SQLite planned but not yet implemented	MEDIUM — memory state is runtime-critical; migration risks session data loss	Options: (a) Keep memory in core indefinitely; (b) Versioned migration with export/import scripts; (c) Define memory as external service (database) before extraction
+H-08 Priority	Dual governance artifact cleanup — Delete medical/AGENTS.md duplicate?	Governance hygiene	medical/AGENTS.md is byte-identical copy of root AGENTS.md; creates ambiguity about which rules apply	LOW — duplicate governance doc; but removal is reversible	Options: (a) Delete medical/AGENTS.md now (agents inherit root); (b) Keep but mark as deprecated; (c) Create medical-specific overrides in differently named file
+H-09	Deliberate-AI-Ensemble relationship — Archive, sync, or keep both?	Repository strategy	FreeAgent has 365 commits vs Deliberate's 1; Deliberate is 55 days stale; but Deliberate = public archive designation	LOW — administrative decision about canonical public face	Options: (a) Keep both: FreeAgent = runtime source; Deliberate = public-facing mirror (sync selected docs); (b) Sunset Deliberate, point public to FreeAgent; (c) Make Deliberate canonical and backport FreeAgent changes
+H-10	CI pipeline adaptation — Adjust pipelines to install shared-infra as dependency?	DevOps	EXTRACTION_READINESS_REPORT.md line 63 is unchecked: "CI pipelines adjusted to install shared-infra as a dependency"	BLOCKER for Phase 1 completion	Options: (a) Use GitHub Packages to publish shared-infra; update CI to npm install @freeagent/shared-infra; (b) Use npm link for local dev; git submodule for CI; (c) Keep monorepo CI until all Phase 1 repos pushed
+---
+Part 3: Phase 1 Extraction Dry-Run Plan (Governance-Constrained)
+Pre-Move Checklist (All Must Be Green)
+#	Check	Status	Evidence
+P1-01	Import-Rewrite Scan — zero genuine ../ imports across target dirs	✅ Complete	docs/IMPORT_REWRITE_PLAN.md lines 25-28; 0 genuine imports
+P1-02	Dependency Graph — no edges between target repos; no circular deps	✅ Complete	docs/DEPENDENCY_GRAPH.md lines 47-50; 3 isolated nodes
+P1-03	Service Coupling Detection — target repos NOT core‑coupled	✅ Complete	docs/EXTRACTION_READINESS_REPORT.md line 57 ✓
+P1-04	Security Gate — credentials rotated, high-entropy scan clean	✅ Complete	docs/SECURITY_REPORT.md lines 53-60; 0 matches; .env.template redacted
+P1-05	.gitignore prepared for each new repo	✅ Complete	docs/EXTRACTION_READINESS_REPORT.md line 60 ✓
+P1-06	package.json created for each new repo	✅ Complete	docs/EXTRACTION_READINESS_REPORT.md line 61 ✓
+P1-07	CI pipelines adjusted to install shared-infra as dependency	❌ PENDING	docs/EXTRACTION_READINESS_REPORT.md line 63 unchecked
+P1-08	Final re‑scan for ../ imports immediately before move	⚠️ MUST RUN	docs/IMPORT_REWRITE_PLAN.md lines 55-59 mandate immediate pre-move scan
+Extraction Order (Non-Negotiable)
+Step	Repo	Source Paths	Pre-Move Validation	Move Action	Post-Move Validation
+1	shared-infra	ci/, scripts/, utils/, tools/	[P1-01] through [P1-06] + [P1-08]	Create new GitHub repo shared-infra; copy files; push; update package.json with scoped name @freeagent/shared-infra	Verify installable via npm install @freeagent/shared-infra from a clean workspace; update docs/DEPENDENCY_GRAPH.md to show shared-infra as package dependency from federation-creative and connection-bridge
+2	federation-creative	federation-game/, DISTRIBUTED_MICROSERVICES_UNIVERSE/weather-server/	Same	Create repo federation-creative; copy subdirectories; push; add shared-infra to package.json dependencies	Verify runs independently (node federation-game/index.html opens in browser; weather-server starts on port); confirm no local imports to deleted ci/, scripts/, etc.
+3	connection-bridge	connection_bridge/	Same	Create repo connection-bridge; copy contents; push; add shared-infra to package.json if needed (currently unused but future‑proof)	Verify Netlify deployment still works (test locally with netlify dev); confirm serverless functions execute
+Governance Constraints During Extraction
+1. Lane Isolation Preserved: No governance artifacts (AGENTS.md, SAFETY_INVARIANTS.md, DUAL_VERIFICATION_PROTOCOL.md) move to Phase 1 repos. Those remain in freeagent-core scope.
+2. Signature Validity Unchanged: No cryptographic signing or trust store changes; Phase 1 repos are ungoverned at runtime (per current lane model).
+3. No Authority Transfer: Extraction does not delegate governance; it only separates code. Governance authority remains with FreeAgent core + lane definitions.
+4. Dependency Graph Immutable: After moves, docs/DEPENDENCY_GRAPH.md must be updated to use new repo names; edges remain zero (Phase 1 repos still isolated).
+Immediate Post-Extraction Actions
+- Update documentation:
+  - docs/DEPENDENCY_GRAPH.md → replace node names with new repo names (shared-infra, federation-creative, connection-bridge)
+  - docs/EXTRACTION_READINESS_REPORT.md → change status of Phase 1 items to "MOVED" with date and commit SHAs
+  - README.md (root) → add note: "Phase 1 extraction completed; see _extracted/ for historical staging only"
+- Preserve _extracted/ staging: Do not delete _extracted/ yet; keep as archive until Phase 2 extraction complete.
+- CI/CD updates: Only after H-10 decision; implement shared-infra installation method.
+- No subsequent moves until Sean approves Phase 2 roadmap (we4free‑mesh, we4free‑web, medical‑demos blocked on H-02 through H-05).
+---
+Part 4: Validation of Governance Correction
+The correction "recency is not authority" has been applied. Evidence:
+Repository	Role	Authority Basis
+FreeAgent (local)	Runtime implementation source — where code is developed, tested, executed	Commit activity (365 commits, daily updates); contains working live_trading.py, orchestrator/, agents/
+Deliberate-AI-Ensemble (clone)	Public archive/site/research source — contains published materials, reference implementations	Citation & deployment: session_checkpoint.md confirms deliberateensemble.works hosts public site; DOI established for WE4Free research
+WE4Free papers/resources	Public-impact artifacts — crisis lines, academic papers	External deployment: live at deliberateensemble.works; OSF DOI; but content ownership remains with FreeAgent runtime until extraction
+Lane governance	Constitutional authority — overrides repository boundaries	Document authority: AGENTS.md, SAFETY_INVARIANTS.md, DUAL_VERIFICATION_PROTOCOL.md define rules applied at runtime regardless of file location
+Conclusion: Deliberate-AI-Ensemble is not obsolete — it is the public-facing branch of the project. FreeAgent is the development/implementation trunk. Both have distinct but complementary roles. The Nexus Graph and WE4Free content belong to the public-facing side, even though their builder code lives in FreeAgent today.
+---
+Final Deliverables Summary
+✅ Completed
+1. Source-of-Truth Matrix — 13 domains mapped across 8 metadata columns with risk assessment
+2. Evidence Validation — Every entry cross-checked against EXTRACTION_READINESS_REPORT.md, DEPENDENCY_GRAPH.md, file system, and session checkpoint
+3. Dual Governance Detection — Identified medical/AGENTS.md duplicate as sole governance artifact conflict
+4. Phase 1 Dry-Run Plan — Step-by-step extraction order with pre/post validation and governance constraints
+5. Human Decision Register — 10 pending decisions cataloged with evidence and blocker status
+⏳ Awaiting Sean Approval
+- H-10 (CI pipeline adjustment) — Immediate blocker to completing Phase 1 validation checklist
+- H-01 through H-09 — Strategic architecture and governance decisions required before Phase 2 extraction
+⚠️ Risks to Mitigate Before Any Move
+- Governance fragmentation if AGENTS.md duplicates not resolved
+- API coupling for we4free‑mesh (Nexus Graph depends on /api/services)
+- PHI exposure if medical data not fully de-identified
+- Memory state loss if substrate migration not versioned
+No file moves have been performed. All work is READ‑ONLY analysis and planning.
+▣  Orchestrator · kilo-auto/free · 13m 26s
+Orchestrator 
+Kilo Auto Free
+Kilo Gateway
+S:\FreeAgent:main
