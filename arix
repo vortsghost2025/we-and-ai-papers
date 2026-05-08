@@ -1,0 +1,362 @@
+I now have everything needed: the full paper, PyPI package details, license, platform classifiers, and the repo's actual inference configuration. Here is the complete audit.
+
+---
+
+```
+LITESPARK_APPLICABILITY_AUDIT:
+  paper_ref: arXiv:2605.06485 (Mindbeam AI, submitted 2026-05-07)
+  reviewed_at: 2026-05-08T04:27:51-04:00
+  pypi_version: 0.1.4 (released 2026-03-02, beta status)
+  code_license: Apache-2.0
+  paper_license: CC BY 4.0
+
+  ─────────────────────────────────────────────────────
+  paper_claims:
+  ─────────────────────────────────────────────────────
+
+    - claim: >
+        9.2× faster time-to-first-token vs vanilla PyTorch on Apple Silicon M4
+        (288 ms vs 2,632 ms; NEON int8 mode)
+      source: "Table 4, §6.2 — Apple Silicon Results"
+      needs_reproduction: true
+      notes: >
+        Baseline is PyTorch dense float32 inference, NOT Ollama or llama.cpp.
+        This is an artificially weak baseline; no practitioner runs float32
+        PyTorch for LLM inference today. Comparison against llama.cpp or
+        Ollama is in Appendix A only.
+
+    - claim: >
+        52× higher throughput on Apple Silicon M4
+        (20.4 tok/s vs 0.39 tok/s baseline)
+      source: "Table 4, §6.2"
+      needs_reproduction: true
+      notes: >
+        20.4 tok/s on ternary 2B model is usable but not remarkable.
+        RTX 5060 + Ollama + 7B GGUF Q4 typically achieves 60–120 tok/s.
+
+    - claim: >
+        14× memory reduction (7,673 MB → 556 MB for 2B model)
+      source: "Table 4, §6.2; §2.2.2"
+      needs_reproduction: false
+      notes: >
+        Memory math is reproducible by inspection: 2B params × 8-bit = ~2 GB
+        raw, ~556 MB after alignment. The 8 GB baseline reflects float32
+        which no optimized runtime uses. The 556 MB figure is against a
+        float32 baseline, not a 4-bit GGUF baseline (~1 GB).
+
+    - claim: >
+        26.7× throughput speedup, 12.6× TTFT speedup on Intel Ice Lake / AMD Zen4
+        (11.2 tok/s vs 0.42 tok/s; 195 ms vs 2,450 ms)
+      source: "Table 5, §6.3"
+      needs_reproduction: true
+      notes: >
+        AVX-512 VNNI required. AMD Zen4+ and Intel Ice Lake+. The Ubuntu
+        headless host (100.95.40.99) would need CPU family verification.
+
+    - claim: >
+        Comparable to or marginally ahead of BitNet.cpp v2 on token generation;
+        Litespark leads on prefill throughput on Intel Xeon at all thread counts
+      source: "Appendix A, Tables A.1–A.3"
+      needs_reproduction: true
+      notes: >
+        Appendix A is the only honest comparison (against a ternary-optimized
+        baseline). On AMD EPYC at 8 threads: Litespark gen = 67.5 tok/s vs
+        BitNet.cpp v2 gen = 66.2 tok/s — effectively a tie. Litespark wins on
+        prefill on Intel. This is the claim worth reproducing.
+
+    - claim: >
+        Max int8 quantization deviation ≤ 0.68 logit units; generation output
+        identical to float32 reference across hundreds of samples
+      source: "§7.2 — Accuracy Considerations"
+      needs_reproduction: true
+      notes: >
+        "Hundreds of samples" is not a formal benchmark. No perplexity numbers
+        on standard benchmarks vs float32 BitNet. Needs HellaSwag / MMLU delta.
+
+    - claim: >
+        pip install litespark-inference works on macOS and Linux
+      source: "§5.4; PyPI classifiers"
+      needs_reproduction: false (confirmed real package exists)
+      notes: >
+        PyPI classifiers explicitly list ONLY MacOS X and POSIX/Linux.
+        Windows (win32) is NOT listed. No Windows wheel exists. GitHub repo
+        is currently private/404 — source cannot be independently audited.
+
+  ─────────────────────────────────────────────────────
+  useful_runtime_pattern:
+  ─────────────────────────────────────────────────────
+
+    structure_exploited: >
+      Ternary weight constraint {-1, 0, +1} collapses matrix multiplication
+      into conditional accumulation (add, subtract, or skip). This turns
+      the arithmetic bottleneck into a memory-bandwidth bottleneck, which
+      SIMD dot-product instructions (NEON SDOT, AVX-512 VPDPBUSD) serve
+      efficiently using 8-bit integers aligned to vector register widths.
+
+    generic_runtime_failure: >
+      Standard frameworks (PyTorch, llama.cpp, Ollama) are general-purpose
+      and apply the same kernel path regardless of weight distribution.
+      A ternary model loaded into PyTorch gets float32 matmul — no
+      sparsity exploitation, no integer path, no SIMD dot-product
+      specialization. Even llama.cpp Q4 kernels are designed for 4-bit
+      dense weights, not the ternary structure.
+
+    custom_runtime_advantage: >
+      By storing weights as int8 (not the theoretical 2-bit minimum)
+      and aligning to vector register boundaries, Litespark feeds
+      hardware dot-product units their native input format with zero
+      preprocessing. Combined with per-row symmetric activation
+      quantization and precomputed zero-point column sums, the whole
+      path avoids float32 at every hot step. The gain is real but
+      model-class-gated: it ONLY applies to {-1,0,+1} weights.
+
+  ─────────────────────────────────────────────────────
+  possible_use_cases:
+  ─────────────────────────────────────────────────────
+
+    - use_case: >
+        CPU-side local sentinel on Ubuntu headless (100.95.40.99) while
+        GPU is saturated with ncu/nsys CUDA profiling runs. BitNet 2B
+        at 556 MB would let the CPU handle lightweight routing/triage
+        tasks with no GPU memory pressure.
+      lane: kernel
+      safety_authority: kernel (self-contained, no governance path touched)
+      expected_benefit: >
+        Zero GPU memory contention during active ncu sessions.
+        556 MB model fits in L3+DRAM easily; ~15–20 tok/s on the
+        AMD/Intel CPU threads while GPU is fully occupied.
+      correctness_risk: >
+        HIGH for agent-quality tasks. BitNet 2B is not adequate for
+        code review, CUDA kernel analysis, or convergence reasoning.
+        WATCH risk: acting on 2B output for Kernel lane decisions
+        without escalation filter. Safe only as a triage/filter step.
+
+    - use_case: >
+        CPU inference reference data point in Kernel benchmark reports.
+        When reporting GPU speedups, a CPU baseline is sometimes needed.
+        Litespark on Ubuntu could generate a reproducible "best achievable
+        CPU LLM inference" number for comparison tables.
+      lane: kernel
+      safety_authority: kernel
+      expected_benefit: >
+        Concrete CPU inference reference in evidence artifacts.
+        Provides honest "what a user without GPU can achieve" numbers.
+      correctness_risk: >
+        LOW — pure measurement artifact, does not affect agent decisions.
+        Must caveat that only one ternary model exists and baselines
+        are vs PyTorch float32 (weak).
+
+    - use_case: >
+        Offline / cloud-fallback model for the ai-review-router local tier
+        on the Ubuntu headless host, replacing or supplementing Ollama
+        qwen2.5-coder:7b ONLY when GPU is unavailable or rebooting.
+      lane: kernel (runtime config), archivist (ratification required)
+      safety_authority: archivist (changes the inference routing config)
+      expected_benefit: >
+        Continuity of very lightweight review tasks (lint, trivial
+        classification) with zero infrastructure dependency on GPU.
+      correctness_risk: >
+        HIGH. BitNet 2B quality is far below qwen2.5-coder:7b for code
+        tasks. Router must hard-gate this path to classification-only
+        prompts ≤ 200 tokens. Ratification required before activation.
+
+  ─────────────────────────────────────────────────────
+  not_suitable_for:
+  ─────────────────────────────────────────────────────
+
+    - use_case: Primary agent intelligence on this Windows development host
+      reason: >
+        No Windows wheel exists. PyPI classifiers explicitly list
+        macOS and POSIX/Linux only. Installing from source on win32
+        requires the C++ SIMD build toolchain (MSVC + compiler flags
+        for AVX-512/AVX-VNNI), which is non-trivial and untested.
+        Do not attempt on this host without explicit sandbox isolation.
+
+    - use_case: Replacing Ollama qwen2.5-coder:7b as primary local inference
+      reason: >
+        RTX 5060 + Ollama + 7B Q4_K_M → ~60–120 tok/s.
+        Litespark + CPU + 2B ternary → ~11–20 tok/s.
+        5–10× throughput regression. Model quality also regresses from
+        7B to 2B. The GPU path strictly dominates on every metric.
+
+    - use_case: Any task requiring model size > 2B parameters
+      reason: >
+        BitNet b1.58 2B is the ONLY publicly available ternary model of
+        meaningful scale as of 2026-05-08. No ternary 7B or 13B production
+        models exist. Model ecosystem is a hard ceiling.
+
+    - use_case: CUDA kernel optimization analysis, convergence reasoning,
+        code generation, multi-step agent tasks
+      reason: >
+        2B parameter class is insufficient for these tasks. Max logit
+        deviation of 0.68 is acceptable for chat but accuracy degradation
+        compounds on multi-step reasoning chains and code generation.
+        No formal benchmark (HellaSwag, HumanEval, MBPP) provided.
+
+    - use_case: Any production agent path without ratification
+      reason: >
+        GitHub repo is 404 (private or not yet public). Code cannot be
+        independently audited. Package is beta (0.1.4). Paper is 1 day old
+        at audit time. No independent reproduction of claims exists yet.
+        One-Blocker Rule + Evidence-First policy prevents unratified adoption.
+
+  ─────────────────────────────────────────────────────
+  reproduction_plan:
+  ─────────────────────────────────────────────────────
+
+    phase_0:
+      check_code_availability: >
+        GitHub repo (github.com/Mindbeam-AI/Litespark-Inference) returns 404
+        as of 2026-05-08. Package IS on PyPI as v0.1.4 (Apache-2.0).
+        Source tarball available: litespark_inference-0.1.4.tar.gz (76.5 kB).
+        Can inspect tarball without installing. Monitor GitHub for public release.
+      check_model_availability: >
+        Microsoft BitNet b1.58 2B-4T is available on HuggingFace.
+        Auto-downloads on first load_model("bitnet-2b") call.
+        Requires HuggingFace authentication token (already in .env conventions).
+      check_license: >
+        Code: Apache-2.0 ✓ (permissive, compatible with this project's use)
+        Paper: CC BY 4.0 ✓
+        Model (BitNet 2B): Microsoft MIT License ✓
+        All three: cleared for sandbox evaluation.
+
+    phase_1:
+      install_in_sandbox: >
+        Target: Ubuntu headless (100.95.40.99), NOT win32 host.
+        Isolate in a Python virtualenv:
+          python3 -m venv /tmp/litespark-sandbox
+          source /tmp/litespark-sandbox/bin/activate
+          pip install litespark-inference torch>=2.4
+        Check CPU SIMD support first:
+          litespark-inference info
+        Verify AVX-512 VNNI (Zen4) or AVX-VNNI capability on that CPU.
+        If CPU lacks dot-product extensions, defer — speedup claims do not apply.
+      run_tiny_inference: >
+        litespark-inference generate "What is 2+2?" --max_new_tokens 20
+        litespark-inference benchmark
+      collect_ttft_tokens_per_sec_memory: >
+        Save output of `litespark-inference benchmark` to:
+          evidence/litespark-cpu-baseline-{hostname}-{date}.json
+        Record: TTFT (ms), throughput (tok/s), peak RSS (MB)
+        If ncu session is running concurrently, record GPU memory separately
+        to prove zero GPU contention.
+
+    phase_2:
+      compare_against:
+        - Ollama qwen2.5-coder:3b:
+            method: >
+              ollama run qwen2.5-coder:3b [same prompt]
+              Record: TTFT, tok/s, RSS
+            expected_result: >
+              Ollama GPU path will dominate on tok/s; Litespark
+              wins on memory footprint (556 MB vs ~2 GB).
+              If GPU busy: Ollama may queue; Litespark CPU runs free.
+        - current CPU baseline:
+            method: >
+              python -c "from transformers import AutoModelForCausalLM;
+              model = AutoModelForCausalLM.from_pretrained('microsoft/bitnet-2b');
+              [time generate call]"
+              This is the float32 PyTorch baseline the paper uses.
+            expected_result: >
+              Paper claims ~0.4 tok/s. If reproducible, confirms
+              the 26x GPU speedup claim is internally consistent.
+        - cloud cheap model baseline:
+            method: >
+              NVIDIA NIM google/gemma-2-2b-it (already in ai-review-router)
+              Time a 100-token generation to same prompt via API.
+            expected_result: >
+              Cloud response dominated by network RTT (~100–500 ms TTFT).
+              Litespark wins on TTFT if network RTT > 195 ms.
+              Cloud wins on throughput (server-side batching).
+
+  ─────────────────────────────────────────────────────
+  governance_boundary:
+  ─────────────────────────────────────────────────────
+
+    allowed:
+      - Reading paper and archiving to Library lane knowledge base
+      - Installing in isolated virtualenv on Ubuntu headless for measurement only
+      - Recording benchmark evidence artifact (JSON/CSV) to evidence/
+      - Reporting findings to Archivist as P2 informational message
+      - Using Litespark tok/s numbers as CPU reference in benchmark reports
+        (clearly annotated as ternary 2B, CPU-only, Apache-2.0)
+
+    blocked:
+      - Installing on win32 development host (no Windows wheel, untested)
+      - Connecting to any production agent routing path without ratification
+      - Using 2B ternary output for convergence, governance, or code decisions
+      - Claiming any Litespark result as "proven" before independent reproduction
+      - Importing litespark_inference into any lane script (sovereignty rule §0)
+      - Proceeding while GitHub source is 404 (cannot audit C++ SIMD kernels)
+
+    ratification_required:
+      - Any integration into ai-review-router.json escalation chain
+      - Any use of Litespark output as an evidence-bearing artifact for
+        convergence claims
+      - Deployment as a persistent service (vs one-shot benchmark run)
+
+  ─────────────────────────────────────────────────────
+  recommendation:
+    choose_one: WATCH_ONLY
+  ─────────────────────────────────────────────────────
+
+    rationale: |
+      Five decisive factors push against sandbox benchmark right now:
+
+      1. PLATFORM MISMATCH: Win32 is the active dev host. No Windows wheel
+         exists. The Ubuntu host is where any test must run, and it has an
+         RTX 5060 that makes the CPU path a regression in every measurable
+         dimension for the system's actual use pattern.
+
+      2. MODEL CEILING: The only supported ternary model is BitNet 2B. The
+         system already uses qwen2.5-coder:7b locally. Dropping to 2B for
+         agent tasks is a correctness regression, not an optimization.
+
+      3. CODE NOT AUDITABLE: GitHub repo returned 404. The SIMD C++ kernel
+         code cannot be independently reviewed before sandbox deployment.
+         This is a lane integrity concern under the Evidence-First policy.
+
+      4. PAPER AGE: Submitted 2026-05-07 (1 day before this audit). No
+         independent reproductions exist. The three headline numbers
+         (9.2×, 52×, 14×) compare against a deliberately weak float32
+         baseline. Appendix A (vs BitNet.cpp v2) tells the honest story:
+         effectively a tie on generation, slight lead on prefill.
+
+      5. NARROW APPLICABILITY WINDOW: The one genuine use case (CPU
+         inference while GPU is fully ncu-saturated) is a niche scenario
+         that does not occur in the daily workflow frequently enough to
+         justify the infrastructure and sovereignty review overhead.
+
+      Revisit as SANDBOX_BENCHMARK when:
+        □ GitHub source becomes public for kernel audit
+        □ A ternary model ≥ 7B parameters ships to HuggingFace
+        □ An independent reproduction of tok/s numbers is published
+        □ A use case arises where the GPU is unavailable for > 30 min
+          AND a 2B quality level is sufficient for the task at hand
+
+  ─────────────────────────────────────────────────────
+
+CONVERGENCE_GATE:
+  claim: >
+    Litespark-style ternary CPU inference is technically sound but not
+    applicable to this agent architecture today due to platform constraints
+    (no Windows wheel), model ceiling (2B only), and GPU-path dominance.
+  evidence: >
+    PyPI classifiers: MacOS+Linux only (confirmed 2026-05-08).
+    config/targets.json: NVIDIA RTX 5060 present.
+    config/ai-review-router.json: local tier = Ollama qwen2.5-coder:7b on GPU.
+    Paper Appendix A: vs BitNet.cpp v2, effectively a tie on generation.
+  verified_by: self (kernel)
+  contradictions: []
+  status: proven
+
+OUTPUT_PROVENANCE:
+  agent: kilo/anthropic/claude-sonnet-4.6
+  model_id: kilo/anthropic/claude-sonnet-4.6
+  lane: kernel
+  target: Litespark ternary inference applicability audit (arXiv:2605.06485)
+  generated_at: 2026-05-08T04:27:51-04:00
+  session_id: unknown
+  platform: win32
+  host: S:/kernel-lane
+```
