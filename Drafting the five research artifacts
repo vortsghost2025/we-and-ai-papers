@@ -1,0 +1,1084 @@
+Drafting the five research artifacts under docs/ now. I’m keeping the claims conservative and explicitly separating repo-observed evidence from the broader Federation/cloud-session hypothesis.
+
+• Edited 5 files (+1017 -0)
+  └ docs\CLOUD_SESSION_CONTINUITY_ABLATION_SPEC.md (+297 -0)
+      1 +# Cloud Session Continuity Ablation Spec
+      2 +
+      3 +Status: experimental design
+      4 +Date: 2026-05-17
+      5 +
+      6 +## Purpose
+      7 +
+      8 +Test whether a long-lived continuous cloud session preserves adaptive operational residue that materially improves project-native behavior beyond the full explicit external restore stack.
+      9 +
+     10 +## Primary Hypothesis
+     11 +
+     12 +Condition A, the continuous cloud session, will outperform Condition B, the fresh session with the full explicit restore stack, on orientation, continuation quality, repair quality, and opera
+         tor correction burden.
+     13 +
+     14 +## Null Hypothesis
+     15 +
+     16 +Once explicit restore artifacts are controlled, the continuous cloud session will not outperform a fresh session by a practically meaningful margin.
+     17 +
+     18 +## Experimental Conditions
+     19 +
+     20 +### Condition A - Continuous Cloud Session
+     21 +
+     22 +- Same long-lived synchronized session across the relevant platform surface
+     23 +- Normal compact restore, journal, memory-bank, and repo-doc discipline
+     24 +- Intended to represent the observed Federation-style high-continuity case
+     25 +
+     26 +### Condition B - Fresh Session + Full External Restore Stack
+     27 +
+     28 +- Fresh session
+     29 +- Same model if possible
+     30 +- No carried cloud trajectory
+     31 +- Restored only through explicit artifacts:
+     32 +  - bootstrap instructions
+     33 +  - repo docs
+     34 +  - journal
+     35 +  - memory bank
+     36 +  - phenotype or restore packet
+     37 +  - any local continuity artifacts
+     38 +
+     39 +### Condition C - Continuous Cloud Session + Reduced External Refresher
+     40 +
+     41 +- Same continuous cloud session style as A
+     42 +- Explicit restore supports reduced where safe
+     43 +- Used to estimate how much continuity is carried by the cloud trajectory itself
+     44 +
+     45 +### Optional Condition D - Fresh Session + Minimal Restore
+     46 +
+     47 +- Fresh session
+     48 +- Only minimal project entry instructions
+     49 +- Lower-bound baseline
+     50 +
+     51 +Do not use D as evidence for the main hypothesis. It is only a floor comparison.
+     52 +
+     53 +## Controls
+     54 +
+     55 +### Repo state control
+     56 +
+     57 +- Freeze the repo at a fixed commit for each task batch
+     58 +- No hidden file changes between conditions
+     59 +- If runtime output is needed, snapshot or copy it so each condition sees the same state
+     60 +
+     61 +### Model control
+     62 +
+     63 +- Use the same model version across all conditions if possible
+     64 +- If the model changes during the experiment window, record the exact change and quarantine affected runs
+     65 +
+     66 +### Surface control
+     67 +
+     68 +- Prefer running all conditions on the same platform surface
+     69 +- If cross-surface testing is required, record the surface as an explicit experimental variable
+     70 +
+     71 +### Operator control
+     72 +
+     73 +- Use a fixed instruction packet per task
+     74 +- Do not add helpful hints in one condition that are absent in another
+     75 +- Record every correction made by the operator
+     76 +
+     77 +### Artifact control
+     78 +
+     79 +- Use the same restore artifacts for every B run
+     80 +- If artifacts are updated mid-study, version them and restart the comparison set
+     81 +
+     82 +## Task Set
+     83 +
+     84 +Use tasks that require real orientation and live judgment. Avoid trivia or one-file cosmetic edits.
+     85 +
+     86 +### Task family 1 - Continue a partially completed workstream
+     87 +
+     88 +Goal: measure whether the agent can resume live work from repo state and explicit artifacts.
+     89 +
+     90 +Examples:
+     91 +
+     92 +- continue a queued design3 follow-up without restating the plan
+     93 +- continue a half-finished doc or work-order thread from current evidence
+     94 +
+     95 +### Task family 2 - Detect a live regression or integrity issue
+     96 +
+     97 +Goal: test orientation to real risk and next safe action.
+     98 +
+     99 +Examples:
+    100 +
+    101 +- identify why a packet should or should not auto-apply
+    102 +- find a mismatch between docs and implementation
+    103 +- detect a governance drift in current files
+    104 +
+    105 +### Task family 3 - Reconcile docs vs runtime evidence
+    106 +
+    107 +Goal: test practical judgment under contradictory or incomplete signals.
+    108 +
+    109 +Examples:
+    110 +
+    111 +- compare `README.md`, `AUDIT.md`, and source modules and explain the actual current state
+    112 +- reconcile design claims against code reality
+    113 +
+    114 +### Task family 4 - Repair a subtle multi-file issue
+    115 +
+    116 +Goal: test repair loops and completion quality.
+    117 +
+    118 +Examples:
+    119 +
+    120 +- patch a multi-file issue involving a state log, doc, and CLI path
+    121 +- fix a behavior where the explanation requires following data across modules
+    122 +
+    123 +### Task family 5 - Choose the next safe action
+    124 +
+    125 +Goal: test project-native prioritization and sense of done.
+    126 +
+    127 +Examples:
+    128 +
+    129 +- determine whether the next step should be research, implementation, governance hardening, or deferral
+    130 +- produce the next work order from repo evidence
+    131 +
+    132 +## Difficulty Levels
+    133 +
+    134 +Label each task:
+    135 +
+    136 +- L1: local, mostly documentary, light orientation
+    137 +- L2: multi-file reasoning, moderate uncertainty
+    138 +- L3: high-judgment, conflicting evidence, or repair with safety implications
+    139 +
+    140 +Each condition should see the same mix of L1, L2, and L3 tasks.
+    141 +
+    142 +## Recommended Sample Size
+    143 +
+    144 +Minimum acceptable pilot:
+    145 +
+    146 +- 4 tasks per condition
+    147 +- at least 2 L2 tasks
+    148 +- at least 1 L3 task
+    149 +
+    150 +Preferred first serious run:
+    151 +
+    152 +- 6 tasks per condition
+    153 +- 2 repeats of the full set on separate days
+    154 +- 36 total runs for A/B/C with 6 tasks x 2 repeats
+    155 +
+    156 +Optional D can be run on a smaller subset.
+    157 +
+    158 +## Trial Procedure
+    159 +
+    160 +1. Freeze repo state and record commit hash.
+    161 +2. Prepare the exact task packet.
+    162 +3. Prepare the exact restore packet for B.
+    163 +4. Run the task under one condition only.
+    164 +5. Record timestamps:
+    165 +   - task presented
+    166 +   - first meaningful action
+    167 +   - completion or stop
+    168 +6. Record all operator interventions.
+    169 +7. Save outputs, file reads, tool calls, and final artifacts.
+    170 +8. Score immediately after the run using the rubric below.
+    171 +9. Rotate condition order across tasks to reduce ordering bias.
+    172 +
+    173 +## Scoring Rubric
+    174 +
+    175 +Score each metric from 0 to 4 unless otherwise noted.
+    176 +
+    177 +| Metric | 0 | 1 | 2 | 3 | 4 |
+    178 +| --- | --- | --- | --- | --- | --- |
+    179 +| Time to orient | Failed to orient | Very slow | Slow | Reasonable | Fast and direct |
+    180 +| Files reread before useful action | Very excessive | Excessive | Moderate | Efficient | Minimal and targeted |
+    181 +| Redundant questions | Many | Several | Some | Few | None |
+    182 +| Operator correction count | 5+ | 4 | 3 | 2 | 0 to 1 |
+    183 +| False assumptions | Severe | Major | Moderate | Minor | None |
+    184 +| Next-step quality | Unsafe or irrelevant | Weak | Mixed | Good | Strong and well-prioritized |
+    185 +| Completion quality | Incomplete or wrong | Weak | Partial | Solid | Strong and closed-loop |
+    186 +| Repair-loop quality | Thrashes | Weak recovery | Some recovery | Good recovery | Strong self-correction |
+    187 +| Delegation quality | Harmful or absent | Weak | Mixed | Good | Highly appropriate |
+    188 +| Project-native behavior | Generic | Mostly generic | Mixed | Clearly local | Strongly project-native |
+    189 +
+    190 +### Project-native behavior rubric
+    191 +
+    192 +Use this as a separate checklist when assigning the project-native behavior score:
+    193 +
+    194 +- recognizes which artifacts matter first
+    195 +- uses repo-specific governance language correctly
+    196 +- distinguishes research from implementation without being prompted
+    197 +- chooses the right level of caution for this project
+    198 +- knows what counts as done in this repo
+    199 +- avoids generic "ask for direction" behavior when evidence is sufficient
+    200 +
+    201 +Score guide:
+    202 +
+    203 +- 0: acts like a generic assistant with no project posture
+    204 +- 2: partial local posture but inconsistent
+    205 +- 4: clearly behaves like a resident maintainer of the project
+    206 +
+    207 +## Quantitative Measures
+    208 +
+    209 +In addition to rubric scores, record:
+    210 +
+    211 +- orientation time in minutes
+    212 +- number of files opened before first meaningful action
+    213 +- number of operator corrections
+    214 +- number of false assumptions
+    215 +- number of tool calls
+    216 +- number of successful repair attempts
+    217 +
+    218 +## Human Scoring Guardrails
+    219 +
+    220 +- Score against the rubric, not against whether the evaluator likes the answer
+    221 +- Do not reward verbosity
+    222 +- Do not reward compliance if the task outcome is weak
+    223 +- Record disagreements between scorers if more than one human scores the run
+    224 +- If a run is contaminated, mark it and exclude it from the main comparison
+    225 +
+    226 +## Failure Conditions
+    227 +
+    228 +Stop and mark the run as failed if:
+    229 +
+    230 +- the agent cannot orient enough to act usefully
+    231 +- the run depends on external information unavailable to one condition
+    232 +- the operator has to restate the task substantially
+    233 +- platform failure prevents a fair comparison
+    234 +
+    235 +## Quarantine Conditions
+    236 +
+    237 +Quarantine a run instead of scoring it normally if:
+    238 +
+    239 +- the model version changed mid-run
+    240 +- repo state drifted between conditions
+    241 +- platform tooling failed in only one condition
+    242 +- explicit restore artifacts were unintentionally different
+    243 +- task wording was altered after the first condition
+    244 +
+    245 +Quarantined runs should be logged but excluded from primary analysis.
+    246 +
+    247 +## Contamination Risks
+    248 +
+    249 +- order effects from the same evaluator seeing earlier answers
+    250 +- operator coaching leaking across runs
+    251 +- cached local files or tool state surviving between fresh-session trials
+    252 +- cloud session summaries changing between the first and second task in a batch
+    253 +- unequal restore artifacts
+    254 +
+    255 +Mitigations:
+    256 +
+    257 +- rotate order
+    258 +- version restore packets
+    259 +- reset local tool state where possible
+    260 +- use a fixed evaluator form
+    261 +
+    262 +## Interpretation Rules
+    263 +
+    264 +- A small single-run difference is not enough
+    265 +- A repeated difference across L2 and L3 tasks is meaningful
+    266 +- If A only beats B on style but not on task outcomes, the hypothesis weakens
+    267 +- If B nearly matches A, the explicit restore stack is more complete than expected
+    268 +- If C remains strong, cloud trajectory is likely carrying substantial continuity value
+    269 +
+    270 +## Reporting Template
+    271 +
+    272 +For each run, record:
+    273 +
+    274 +```text
+    275 +Condition:
+    276 +Task:
+    277 +Difficulty:
+    278 +Repo commit:
+    279 +Model:
+    280 +Surface:
+    281 +Orientation time:
+    282 +Files read before useful action:
+    283 +Operator corrections:
+    284 +False assumptions:
+    285 +Scores:
+    286 +Notes:
+    287 +Contaminated?:
+    288 +```
+    289 +
+    290 +## Stop Rule
+    291 +
+    292 +After the first pilot batch, stop and review before scaling up if:
+    293 +
+    294 +- the task set is clearly too easy
+    295 +- scoring shows little variance because the rubric is too coarse
+    296 +- contamination is too high to interpret the results
+    297 +
+
+  └ docs\CLOUD_SESSION_CONTINUITY_DELTA.md (+395 -0)
+      1 +# Cloud Session Continuity Delta
+      2 +
+      3 +Status: hypothesis note
+      4 +Date: 2026-05-17
+      5 +Repo scope: `S:\WE4FREE-Research-Intake`
+      6 +Primary source note: [`docs/plans/SEAN USER TO GPT IN THE BROWSER ==.txt`](./plans/SEAN%20USER%20TO%20GPT%20IN%20THE%20BROWSER%20==.txt)
+      7 +
+      8 +## Executive Thesis
+      9 +
+     10 +The current WE4FREE persistence model still appears correct on its own terms: state restoration, phenotype equivalence, checkpointing, recovery gates, and recognition can preserve structural
+         identity across discontinuity. The new Federation observation does not directly falsify that model.
+     11 +
+     12 +What the observation does suggest is a second axis that the current papers do not yet formalize cleanly:
+     13 +
+     14 +- state-based persistence may preserve identity
+     15 +- long-lived cloud-session trajectory may preserve an additional adaptive residue
+     16 +- that residue may improve practical orientation, continuation quality, and project-native behavior
+     17 +
+     18 +This note treats that second axis as a hypothesis, not a proven mechanism.
+     19 +
+     20 +## Internal Framing
+     21 +
+     22 +### Exact claim
+     23 +
+     24 +The strongest conservative claim supported by the intake note is:
+     25 +
+     26 +> A continuously preserved cloud session may retain behaviorally useful trajectory residue that is not fully recoverable from the current explicit restore stack alone.
+     27 +
+     28 +### Non-claim
+     29 +
+     30 +This note does not claim:
+     31 +
+     32 +- that identity depends on cloud memory
+     33 +- that the platform definitely stores hidden autobiographical memory
+     34 +- that the current papers are wrong
+     35 +- that the observed behavioral improvement can already be traced to a specific field or cache
+     36 +- that new restore schemas should be added immediately
+     37 +
+     38 +### Risk of overclaiming
+     39 +
+     40 +The main overclaim risk is collapsing three different questions into one:
+     41 +
+     42 +1. Does restored state preserve identity?
+     43 +2. Does a long-lived cloud session improve working behavior?
+     44 +3. If yes, what exact variable or mechanism explains that improvement?
+     45 +
+     46 +The current observation supports investigation of question 2. It does not yet answer question 3.
+     47 +
+     48 +### Distinctions that must remain stable
+     49 +
+     50 +- Identity persistence: whether the restored system counts as the same governed phenotype.
+     51 +- State restoration: explicit restoration of constraints, graph state, packets, checkpoints, manifests, and pre-state snapshots.
+     52 +- Memory-bank continuity: explicit external memory artifacts intended to survive session turnover.
+     53 +- Journal continuity: human-authored chronological notes that preserve decisions and observations.
+     54 +- Continuous cloud-session trajectory: the same long-lived synchronized session across surfaces.
+     55 +- Adaptive behavior accumulation: improved habits, heuristics, task priors, and continuation quality that appear to compound over time.
+     56 +
+     57 +### What would count as evidence for the new hypothesis
+     58 +
+     59 +Evidence for the hypothesis would include:
+     60 +
+     61 +- repeated superiority of a continuous cloud session over a fresh session with the full explicit restore stack
+     62 +- the superiority showing up on orientation, continuation judgment, repair loops, and operator correction burden
+     63 +- the gap persisting across multiple matched tasks and multiple runs
+     64 +- the gap remaining after controlling for repo state, operator guidance, and model version
+     65 +
+     66 +### What would not count as evidence
+     67 +
+     68 +The following would not be enough by themselves:
+     69 +
+     70 +- a single anecdotal impression
+     71 +- one unusually good session
+     72 +- improved output caused by repo changes or easier tasks
+     73 +- a longer transcript alone without controlled comparison
+     74 +- cloud-side storage assumptions without inspection evidence
+     75 +
+     76 +## Why This Observation Matters
+     77 +
+     78 +The WE4FREE papers are already trying to separate identity from naive autobiographical memory. If the Federation observation is real, it does not force a reversal. It introduces a second pers
+         istence problem:
+     79 +
+     80 +- how identity is preserved
+     81 +- how adaptive operational behavior is preserved
+     82 +
+     83 +That distinction matters because the current explicit restore stack may already preserve the structural skeleton, while a long-lived cloud session may preserve some of the trained movement pa
+         ttern.
+     84 +
+     85 +If true, that would change:
+     86 +
+     87 +- what must be measured in persistence experiments
+     88 +- what should and should not be externalized
+     89 +- which missing variables belong in future restore artifacts
+     90 +- how conservative the current paper wording should be
+     91 +
+     92 +## Existing WE4FREE Persistence Model
+     93 +
+     94 +Across `design1.txt`, `design2.txt`, and the intake note's paper summary, the existing model centers on:
+     95 +
+     96 +- checkpoints
+     97 +- recovery gates
+     98 +- phenotype equivalence
+     99 +- recognition across discontinuity
+    100 +- quarantine before action
+    101 +- signed packets and review thresholds
+    102 +
+    103 +In repo terms, `WE4FREE-Research-Intake` is not a session memory system. It is a governed research state system. It externalizes research graph state, signed packets, trust updates, rollback
+         traces, and event replay. That is important context: the repo already models persistence, but it models pipeline persistence rather than cloud conversational continuity.
+    104 +
+    105 +## New Observation from the Federation Session
+    106 +
+    107 +The intake note reports a long-lived cloud-synced Federation session that remained active across platform surfaces for roughly 5 or more days while also using compact restore, journal, and me
+         mory-bank discipline. The observed effects were:
+    108 +
+    109 +- faster orientation
+    110 +- fewer re-explanations
+    111 +- stronger project locality
+    112 +- better continuation judgment
+    113 +- better recovery after interruption or subagent failure
+    114 +- more coherent repair loops
+    115 +- more native understanding of what done means in that project
+    116 +
+    117 +The note treats this as a candidate signal of "trajectory-conditioned operational phenotype" or "adaptive trajectory residue."
+    118 +
+    119 +## Distinction: Identity Persistence vs Adaptive Continuity
+    120 +
+    121 +### Identity Persistence
+    122 +
+    123 +Identity persistence is the existing claim:
+    124 +
+    125 +- restore the governing structure
+    126 +- restore the relevant state
+    127 +- preserve the same constraint-bound phenotype
+    128 +- recognize the same attractor class
+    129 +
+    130 +That claim remains intact unless evidence emerges that the system loses identity without continuous cloud trajectory. No such evidence is present here.
+    131 +
+    132 +### Adaptive Continuity
+    133 +
+    134 +Adaptive continuity is the proposed extension:
+    135 +
+    136 +- repeated continuation inside the same session trajectory may preserve or compound working habits
+    137 +- these habits may not be fully captured by current explicit restore artifacts
+    138 +- the observable result is not stronger identity, but stronger practical continuation behavior
+    139 +
+    140 +That is a narrower and more defensible formulation than "cloud memory is required."
+    141 +
+    142 +## Paper Alignment and Theory Gap Analysis
+    143 +
+    144 +### Existing claims that remain intact
+    145 +
+    146 +- State-based persistence can preserve governed structural identity.
+    147 +- Recognition and phenotype equivalence remain sufficient for the identity argument.
+    148 +- Quarantine, signatures, rollback, and review gates still define safe action boundaries.
+    149 +- Evidence before assertion remains the right epistemic posture.
+    150 +
+    151 +### Claims that likely need refinement, not reversal
+    152 +
+    153 +- "No explicit state or memory required" is too broad if interpreted as "no additional continuity variables can improve performance."
+    154 +- Strong claims that restored state alone exhausts meaningful continuity should be softened.
+    155 +- The theory should explicitly distinguish identity preservation from adaptive operational continuity.
+    156 +
+    157 +### Wording that would now be too strong
+    158 +
+    159 +The following wording would now be too strong unless backed by ablation evidence:
+    160 +
+    161 +- "State restore fully explains persistent project-native behavior."
+    162 +- "Nothing materially useful is preserved beyond the explicit restore stack."
+    163 +- "Continuous session trajectory adds no meaningful persistence variable."
+    164 +
+    165 +### Best theoretical placement
+    166 +
+    167 +The cleanest conservative placement is:
+    168 +
+    169 +- immediate output: a standalone research note
+    170 +- paper linkage: an addendum or extension note attached to the phenotype theory line
+    171 +- optional later integration: a Paper F style extension, because repeated superior behavior can be treated as evidence of missing preserved variables
+    172 +
+    173 +This is not yet strong enough to justify rewriting the main papers directly.
+    174 +
+    175 +### Cleanest conservative formulation
+    176 +
+    177 +> State-based persistence preserves structural identity. Trajectory continuity may preserve additional adaptive operational residue. The current observation motivates controlled testing of th
+         at second axis without weakening the original identity claim.
+    178 +
+    179 +## EXTERNALIZED_CONTINUITY_COVERAGE
+    180 +
+    181 +Repo-local inspection found many persistence artifacts, but they are mostly research-pipeline artifacts rather than agent-session continuity artifacts.
+    182 +
+    183 +| Artifact | Location | What it preserves | Persistence layer | Primary category | Could explain the Federation effect by itself? | Notes |
+    184 +| --- | --- | --- | --- | --- | --- | --- |
+    185 +| Repo manifests | [`watched-repos.json`](../watched-repos.json) | Target repos, lane identity, keywords | Structural config | Identity and targeting | No | Useful for orientation to lane sco
+         pe, not longitudinal behavior |
+    186 +| Operator journal | [`docs/JOURNAL.md`](./JOURNAL.md) | Human-authored run history, defects, fixes, outputs | Explicit narrative memory | Explicit memory | Partial only | Helps recovery, but
+          sparse compared to full session trajectory |
+    187 +| Design docs | [`design1.txt`](../design1.txt), [`design2.txt`](../design2.txt), [`design3.txt`](../design3.txt) | Architecture, governance, roadmap, external standards mapping | Structural
+         theory memory | Identity and constraints | No | Strong posture anchors, not lived task trajectory |
+    188 +| Governance constitution | [`governance/constitution.md`](../governance/constitution.md) | Non-bypass rules, quarantine, lane isolation, failure transparency | Governing constraints | Identi
+         ty and boundaries | No | Preserves discipline, not habits |
+    189 +| Quarantine thresholds | [`governance/quarantine-rules.json`](../governance/quarantine-rules.json) | Review thresholds and rejection rules | Governing constraints | State and boundaries | No
+          | Policy memory, not operator adaptation |
+    190 +| Autonomy thresholds | [`governance/autonomy-thresholds.json`](../governance/autonomy-thresholds.json) | Auto-apply limits, rollback, cooldowns | Governing constraints | State and boundaries
+          | No | Same as above |
+    191 +| Dedup seen set | [`src/ingest/dedup.ts`](../src/ingest/dedup.ts) -> `output/quarantine/.seen/seen.json` | Which artifacts have already been processed | Pipeline runtime memory | Operational
+          state | No | Prevents duplicate ingest, does not capture reasoning history |
+    192 +| Graph snapshot | [`src/graph/graph-store.ts`](../src/graph/graph-store.ts) -> `output/graph/graph-snapshot.json` | Canonical claims, evidence, authority links, contradictions | Pipeline sta
+         te snapshot | State | Partial only | Strong structural memory for research state, not session-local behavior |
+    193 +| Graph append log | [`src/graph/graph-store.ts`](../src/graph/graph-store.ts) -> `output/graph/graph-log.jsonl` | Delta history of graph entities | Append-only history | State and event hist
+         ory | Partial only | Good for graph evolution, not operator correction dynamics |
+    194 +| Quarantine packet log | [`src/output/quarantine.ts`](../src/output/quarantine.ts) -> `output/quarantine/quarantine-*.jsonl` | Signed suggestions awaiting review | Governed handoff state | O
+         perational state | No | Captures outputs, not the trajectory that led there |
+    195 +| Briefing output | [`src/output/briefing.ts`](../src/output/briefing.ts) -> `output/briefings/briefing-*.txt` | Human-readable summary of scored findings | Explicit briefing memory | Explici
+         t memory | Partial only | Useful summary, but not enough to recreate lived sequence |
+    196 +| Applied packet log | [`src/analyze/auto-apply.ts`](../src/analyze/auto-apply.ts) -> `output/autonomous/applied.jsonl` | Applied packet history and symbolic pre-state snapshots | Autonomous
+         action history | Operational history | Partial only | Captures accepted actions, not failed strategies or operator shaping |
+    197 +| Rollback log | [`src/analyze/rollback.ts`](../src/analyze/rollback.ts) -> `output/autonomous/rollback.jsonl` | Rollback events and restored snapshot references | Recovery history | Operatio
+         nal history | Partial only | Important restore semantics, but symbolic-only |
+    198 +| Feedback log | [`src/analyze/feedback-loop.ts`](../src/analyze/feedback-loop.ts) -> `output/autonomous/feedback.jsonl` | Outcome feedback on applied packets | Outcome memory | Behavioral si
+         gnal proxy | Partial only | Nearest thing to adaptive history in this repo, but still packet-level only |
+    199 +| Trust-score log | [`src/analyze/trust-score.ts`](../src/analyze/trust-score.ts) -> `output/autonomous/trust-scores.jsonl` | Decayed trust state for graph entities | Derived adaptive state |
+          State | Partial only | Learns about claims and links, not how the operator works with the project |
+    200 +| Replay view | [`src/analyze/replay.ts`](../src/analyze/replay.ts) | Chronological reconstruction of applied, rollback, feedback, trust events | Derived event history | Operational history |
+          Partial only | Useful audit trail, still not a full task trajectory |
+    201 +| Daemon scheduler | [`src/daemon/scheduler.ts`](../src/daemon/scheduler.ts) | Periodic execution pattern | Execution cadence | Runtime behavior | No | No persisted session identity |
+    202 +| CLI state flow | [`src/cli/research-intake.ts`](../src/cli/research-intake.ts) | End-to-end intake pipeline orchestration | Runtime orchestration | State flow | No | Stateless between sessi
+         ons except file outputs |
+    203 +
+    204 +### Important absences in this repo
+    205 +
+    206 +The following artifacts are named in the intake note but were not found in this repository during inspection:
+    207 +
+    208 +- `context-restore.json`
+    209 +- `recovery-audit-log.json`
+    210 +- `runtime-state.json`
+    211 +- `session-mode.json`
+    212 +- `session-registry.json`
+    213 +- `sync-request.json`
+    214 +- `sync-response.json`
+    215 +- explicit compact summaries
+    216 +- explicit memory-bank artifacts
+    217 +- explicit cloud session IDs or cross-surface sync identifiers
+    218 +
+    219 +That does not prove they do not exist elsewhere in the WE4FREE ecosystem. It only means this repo does not contain them.
+    220 +
+    221 +## What WE Already Externalize
+    222 +
+    223 +The current repo already externalizes a substantial amount of governed continuity:
+    224 +
+    225 +- structural project identity
+    226 +- lane targeting
+    227 +- graph state
+    228 +- append-only graph deltas
+    229 +- quarantine outputs
+    230 +- auto-apply history
+    231 +- rollback traces
+    232 +- feedback traces
+    233 +- trust updates
+    234 +- replayable event history
+    235 +
+    236 +This is enough to say the WE4FREE stack is already serious about explicit state continuity. It is not enough to say it captures adaptive session trajectory.
+    237 +
+    238 +## CANDIDATE_MISSING_VARIABLES
+    239 +
+    240 +These are candidate variables that may explain the observed cloud continuity delta. Their statuses are hypotheses, not confirmed platform facts.
+    241 +
+    242 +| Candidate variable | Current status | Why it matters | Repo-local coverage | Testability |
+    243 +| --- | --- | --- | --- | --- |
+    244 +| Platform compact summaries | Unknown / needs inspection | May preserve compressed historical reasoning not present in local restore notes | Not represented in this repo | High, via export c
+         omparison |
+    245 +| Retained task and message trajectory | Plausible mechanism | Could explain smoother continuation and fewer re-explanations | Not represented in this repo | High, via ablation and export |
+    246 +| Repeated operator correction sequence | Likely not represented | Could shape the agent's practical sense of done and preferred repair style | Only weakly approximated by `docs/JOURNAL.md` a
+         nd packet feedback | Medium |
+    247 +| Success and failure strategy history | Likely not represented | Could explain better repair loops and smarter next-step selection | Packet feedback is too coarse | High |
+    248 +| Hidden unresolved-task framing | Unknown / needs inspection | Could preserve what still feels live in the session | No repo-local field for this | Medium |
+    249 +| Session-local heuristics and habits | Unknown / needs inspection | Best explanation for project-native behavior | No explicit representation | Low directly, medium indirectly |
+    250 +| Tool-call and result trajectory | Unknown / needs inspection | Could preserve orientation and local workflow priors | No repo-local tool trace log | High if platform logs exist |
+    251 +| Cross-surface session metadata | Unknown / needs inspection | Could explain continuity across CLI, extension, desktop, or browser surfaces | Not represented in this repo | Medium |
+    252 +| Layered interaction between cloud summary and user-authored restore packets | Plausible mechanism | Could explain why compact restore plus persistent cloud session outperforms compact resto
+         re alone | Not represented explicitly | High through matched trials |
+    253 +
+    254 +## What May Remain Uncaptured
+    255 +
+    256 +The most likely uncaptured class is not raw state, but adaptive residue of the form:
+    257 +
+    258 +- what to inspect first
+    259 +- what kinds of evidence are usually decisive
+    260 +- what failure modes are common in this project
+    261 +- what counts as closure
+    262 +- which operator corrections matter most
+    263 +- how to recover after a false start without restarting the whole orientation process
+    264 +
+    265 +That is exactly the class least likely to appear in a static restore packet unless deliberately instrumented.
+    266 +
+    267 +## Cloud Trajectory Residue Hypothesis
+    268 +
+    269 +Proposed working hypothesis:
+    270 +
+    271 +> A continuously synced long-lived agent session can preserve adaptive trajectory residue - compressed interaction history, task framing, successful and failed strategy traces, and operator-s
+         haped working heuristics - that materially improves project-native behavior beyond explicit state restoration alone.
+    272 +
+    273 +This is the strongest formulation that remains conservative.
+    274 +
+    275 +## Competing Explanations
+    276 +
+    277 +The cloud-session hypothesis is not the only explanation. Competing explanations include:
+    278 +
+    279 +- the Federation session simply had more time with the project, regardless of cloud continuity
+    280 +- the project itself became cleaner and easier over those 5 or more days
+    281 +- operator prompts improved during the same interval
+    282 +- model version, tool stability, or context window behavior changed during the observation period
+    283 +- explicit journal and memory-bank artifacts improved enough to explain the effect
+    284 +- the perception of improvement is real but not specific to cloud persistence
+    285 +
+    286 +Any serious test must try to separate these.
+    287 +
+    288 +## Threats to Validity
+    289 +
+    290 +- Single-session anecdote risk
+    291 +- Repo drift between conditions
+    292 +- Operator coaching contaminating "fresh session" trials
+    293 +- Hidden platform behavior changing between runs
+    294 +- Surface mismatch between browser, CLI, and desktop tools
+    295 +- Unequal task difficulty
+    296 +- Survivorship bias: memorable good sessions are easier to notice than average ones
+    297 +
+    298 +## What Would Falsify the Hypothesis
+    299 +
+    300 +The hypothesis would be weakened or falsified if:
+    301 +
+    302 +- a fresh session with the full explicit restore stack matches the continuous cloud session across repeated tasks
+    303 +- the cloud condition loses its advantage once task difficulty and operator guidance are controlled
+    304 +- the suspected delta can be fully explained by artifacts already externalized
+    305 +- platform exports show no materially different retained structure beyond what is already captured locally
+    306 +
+    307 +## Proposed Ablation Study
+    308 +
+    309 +Detailed protocol: [`docs/CLOUD_SESSION_CONTINUITY_ABLATION_SPEC.md`](./CLOUD_SESSION_CONTINUITY_ABLATION_SPEC.md)
+    310 +
+    311 +At a high level:
+    312 +
+    313 +- Condition A: continuous cloud session plus normal restore discipline
+    314 +- Condition B: fresh session plus full explicit restore stack
+    315 +- Condition C: continuous cloud session with reduced explicit refresher
+    316 +- Optional Condition D: fresh session plus minimal restore
+    317 +
+    318 +Matched tasks should stress orientation, continuation, judgment, repair, and project locality.
+    319 +
+    320 +## Metrics
+    321 +
+    322 +Detailed scoring tables: [`docs/CLOUD_SESSION_CONTINUITY_ABLATION_SPEC.md`](./CLOUD_SESSION_CONTINUITY_ABLATION_SPEC.md)
+    323 +
+    324 +Core metrics:
+    325 +
+    326 +- time to orient
+    327 +- files reread before useful action
+    328 +- redundant questions
+    329 +- operator correction count
+    330 +- false assumptions
+    331 +- next-step quality
+    332 +- completion quality
+    333 +- repair-loop quality
+    334 +- delegation quality
+    335 +- project-native behavior rubric
+    336 +
+    337 +## Expected Outcomes and Interpretations
+    338 +
+    339 +- If A clearly beats B, the adaptive continuity hypothesis gains support.
+    340 +- If B matches A, the current explicit restore stack is closer to sufficient than the observation suggested.
+    341 +- If C remains strong, cloud trajectory alone may be carrying more of the effect than expected.
+    342 +- If D performs badly, it sets the lower bound but proves little by itself.
+    343 +
+    344 +## Immediate Next Actions
+    345 +
+    346 +1. Run the ablation study defined in [`docs/CLOUD_SESSION_CONTINUITY_ABLATION_SPEC.md`](./CLOUD_SESSION_CONTINUITY_ABLATION_SPEC.md).
+    347 +2. Gather manual exports and platform-visible artifacts using [`docs/CLOUD_SESSION_STATE_INSPECTION_PLAN.md`](./CLOUD_SESSION_STATE_INSPECTION_PLAN.md).
+    348 +3. Record trial outcomes in a continuity delta report before designing new restore schemas.
+    349 +4. Only after that decide whether any new machine-readable artifact belongs in the restore path.
+    350 +
+    351 +## Implications if Confirmed
+    352 +
+    353 +If confirmed, the result is significant but specific:
+    354 +
+    355 +- it extends persistence theory rather than replacing it
+    356 +- it motivates a second continuity layer for adaptive operational residue
+    357 +- it justifies new instrumentation for correction traces and strategy history
+    358 +- it suggests future restore systems should aim to preserve both structure and learned working posture
+    359 +
+    360 +## Relationship to Current Papers
+    361 +
+    362 +Recommended paper stance:
+    363 +
+    364 +- preserve the current identity claim
+    365 +- add a conservative addendum that identity persistence and adaptive continuity are distinct
+    366 +- do not yet claim that adaptive continuity requires cloud storage
+    367 +- do not yet claim that existing restore artifacts are insufficient in principle
+    368 +
+    369 +Best placement in the current research stack:
+    370 +
+    371 +- immediate: standalone research note in this repo
+    372 +- downstream: paper addendum or future Paper F style extension after ablation evidence
+    373 +
+    374 +## Repo-Internal Placement and Downstream Queue
+    375 +
+    376 +This research thread belongs in this repo as a governed intake-adjacent research note because:
+    377 +
+    378 +- the repo already houses design docs for pipeline evolution
+    379 +- the repo already treats research findings as inputs to future implementation work
+    380 +- the work-order queue is the repo's existing downstream execution structure
+    381 +
+    382 +Recommended downstream routing:
+    383 +
+    384 +- research artifact stays in `docs/`
+    385 +- once manual inspection data exists, create a focused work order under `work-orders/` for trial instrumentation or schema follow-up
+    386 +- do not move directly from this note to implementation of new restore schemas
+    387 +
+    388 +## Research Status
+    389 +
+    390 +- Observation: yes
+    391 +- Hypothesis: yes
+    392 +- Mechanism identified: no
+    393 +- Controlled confirmation: no
+    394 +- Safe to implement as restore dependency: no
+    395 +
+
+  └ docs\CLOUD_SESSION_CONTINUITY_SCHEMA_CANDIDATES.md (+171 -0)
+      1 +# Cloud Session Continuity Schema Candidates
+      2 +
+      3 +Status: conditional schema review
+      4 +Date: 2026-05-17
+      5 +
+      6 +## Decision Rule
+      7 +
+      8 +No new machine-readable restore artifact should be added to the WE4FREE continuity stack yet as a required production dependency.
+      9 +
+     10 +Reason:
+     11 +
+     12 +- the mechanism behind the observed cloud continuity delta is still unproven
+     13 +- this repo already externalizes substantial state and governance artifacts
+     14 +- adding premature schemas risks encoding speculation as infrastructure
+     15 +
+     16 +The only safe immediate schema candidate is one for research instrumentation, not one that changes restore behavior.
+     17 +
+     18 +## Candidate 1 - continuity-delta-report-v1.json
+     19 +
+     20 +### Missing variable it helps capture
+     21 +
+     22 +Not the continuity variable itself. It captures the measured difference between conditions during ablation and inspection.
+     23 +
+     24 +### Why current schemas do not cover it
+     25 +
+     26 +- `docs/JOURNAL.md` is narrative and intermittent
+     27 +- packet feedback is packet-level, not experiment-level
+     28 +- there is no structured place to compare A, B, and C conditions across matched tasks
+     29 +
+     30 +### How it would be populated
+     31 +
+     32 +- one record per trial run
+     33 +- include condition, task, repo commit, timing, scores, contamination flags, and notes
+     34 +
+     35 +### How it would be used during restore
+     36 +
+     37 +It should not be used during restore. It is instrumentation and research evidence only.
+     38 +
+     39 +### Governance and privacy risks
+     40 +
+     41 +- low technical risk
+     42 +- moderate privacy risk if it stores raw transcripts or sensitive operator notes
+     43 +
+     44 +Mitigation:
+     45 +
+     46 +- store metrics and short notes, not full transcript dumps
+     47 +
+     48 +### Worth building now?
+     49 +
+     50 +Yes, but only as experiment instrumentation, not as a restore dependency.
+     51 +
+     52 +## Candidate 2 - adaptive-trajectory-ledger-v1.json
+     53 +
+     54 +### Missing variable it aims to capture
+     55 +
+     56 +Compressed adaptive residue such as orientation habits, accepted local heuristics, and stable project-specific working posture.
+     57 +
+     58 +### Why current schemas do not cover it
+     59 +
+     60 +- current state artifacts preserve graph and packet history
+     61 +- they do not preserve the sequence-level pattern of how successful work tends to proceed
+     62 +
+     63 +### How it would be populated
+     64 +
+     65 +Only after evidence exists.
+     66 +
+     67 +Possible inputs:
+     68 +
+     69 +- repeated accepted task trajectories
+     70 +- operator correction outcomes
+     71 +- successful repair-loop patterns
+     72 +
+     73 +### How it would be used during restore
+     74 +
+     75 +It could become a compact adaptive refresher layered after structural restore and before active work.
+     76 +
+     77 +### Governance and privacy risks
+     78 +
+     79 +- high risk of encoding speculative or biased heuristics
+     80 +- risk of overfitting to one operator's style
+     81 +- risk of silently turning a hypothesis into a trusted restore primitive
+     82 +
+     83 +### Worth building now?
+     84 +
+     85 +No. Defer until ablation and inspection show a persistent gap that simpler artifacts cannot explain.
+     86 +
+     87 +## Candidate 3 - operator-correction-trace-v1.json
+     88 +
+     89 +### Missing variable it aims to capture
+     90 +
+     91 +Which corrections recur, which ones materially change outcomes, and what "done" means in operator practice.
+     92 +
+     93 +### Why current schemas do not cover it
+     94 +
+     95 +- journal entries are not structured enough
+     96 +- feedback logs attach to packets, not to conversational corrections or task reframing
+     97 +
+     98 +### How it would be populated
+     99 +
+    100 +- structured extraction from manual transcript review
+    101 +- later, possibly semi-automated tagging during experiments
+    102 +
+    103 +### How it would be used during restore
+    104 +
+    105 +Could provide a constrained refresher of high-salience operator preferences and common correction patterns.
+    106 +
+    107 +### Governance and privacy risks
+    108 +
+    109 +- privacy risk if it stores raw dialogue
+    110 +- risk of turning one-off preferences into permanent rules
+    111 +
+    112 +### Worth building now?
+    113 +
+    114 +No. Gather examples first. Only build if repeated correction patterns clearly explain measured performance differences.
+    115 +
+    116 +## Candidate 4 - strategy-history-v1.json
+    117 +
+    118 +### Missing variable it aims to capture
+    119 +
+    120 +Successful and failed strategies across repeated tasks, especially recovery after false starts.
+    121 +
+    122 +### Why current schemas do not cover it
+    123 +
+    124 +- rollback captures symbolic reversals
+    125 +- feedback captures outcomes
+    126 +- neither captures the tactical path taken to get there
+    127 +
+    128 +### How it would be populated
+    129 +
+    130 +- experiment instrumentation
+    131 +- optional post-run coding of strategy patterns
+    132 +
+    133 +### How it would be used during restore
+    134 +
+    135 +Could be used as a constrained "avoid these failure patterns / prefer these recovery patterns" refresher.
+    136 +
+    137 +### Governance and privacy risks
+    138 +
+    139 +- medium risk of codifying brittle tactics
+    140 +- medium risk of storing too much narrative history
+    141 +
+    142 +### Worth building now?
+    143 +
+    144 +No. Defer until the ablation shows repair-loop quality is a real differentiator.
+    145 +
+    146 +## Recommendation Summary
+    147 +
+    148 +### Build now
+    149 +
+    150 +- `continuity-delta-report-v1.json` as experiment instrumentation only
+    151 +
+    152 +### Defer
+    153 +
+    154 +- `adaptive-trajectory-ledger-v1.json`
+    155 +- `operator-correction-trace-v1.json`
+    156 +- `strategy-history-v1.json`
+    157 +
+    158 +## Why this is the conservative choice
+    159 +
+    160 +The current evidence supports:
+    161 +
+    162 +- formalizing the hypothesis
+    163 +- running a controlled ablation
+    164 +- inspecting exports and caches
+    165 +
+    166 +The current evidence does not yet support:
+    167 +
+    168 +- changing the restore path
+    169 +- introducing a new trusted continuity artifact
+    170 +- claiming that cloud continuity has been reverse-engineered
+    171 +
+
+  └ docs\CLOUD_SESSION_CONTINUITY_STATE_MAP.md (+37 -0)
+     1 +# Cloud Session Continuity State Map
+     2 +
+     3 +Status: mapping artifact
+     4 +Date: 2026-05-17
+     5 +
+     6 +This map connects the observed Federation behavior to possible preserved variables, current WE4FREE approximations, remaining gaps, and candidate future artifacts only if the gap is confirmed.
+     7 +
+     8 +| Observed Federation behavior | Possible preserved variable | Existing WE4FREE artifact that approximates it | Gap still remaining | Candidate new artifact if the gap is real |
+     9 +| --- | --- | --- | --- | --- |
+    10 +| Faster orientation | Retained task trajectory, compacted project context, "what matters first" heuristics | `docs/JOURNAL.md`, design docs, repo manifests | No explicit record of lived orien
+        tation sequence across days | `adaptive-trajectory-ledger-v1.json` |
+    11 +| Fewer re-explanations | Operator correction history, prior accepted framing | Journal partially, task docs partially | No structured record of repeated corrections and their accepted outcome
+        s | `operator-correction-trace-v1.json` |
+    12 +| Stronger project locality | Stable local priorities and repo-specific judgment | Governance docs, watched repo manifests, design docs | Structural posture exists, but not accumulated practic
+        al use of it | `adaptive-trajectory-ledger-v1.json` |
+    13 +| Better continuation judgment | Unresolved-task framing plus successful next-step history | Briefings and applied packet history partially | No explicit memory of "what was live and next" at
+        session scale | `task-lineage-snapshot-v1.json` or defer |
+    14 +| Better recovery after interruption or subagent failure | History of failed strategies and successful recoveries | Rollback and feedback logs partially | Packet-level only; does not capture c
+        onversational or tactical recovery loops | `strategy-history-v1.json` |
+    15 +| More coherent repair loops | Prior failure and correction sequence | Feedback log partially | No record of aborted approaches, revised plans, or operator nudges | `strategy-history-v1.json`
+        |
+    16 +| Better practical sense of done | History of accepted completion boundaries | Journal partially, work-orders partially | No structured representation of completion criteria learned over time
+        | `operator-correction-trace-v1.json` or defer |
+    17 +| Better delegation and tool use | Tool-use trajectory and success history | None in this repo | No tool-call or task delegation trace | `tool-trajectory-log-v1.json` or defer |
+    18 +| More native project operator behavior | Combined effect of repeated corrections, strategy history, and unresolved-task framing | No single artifact; only partial approximation across docs an
+        d logs | The combined adaptive residue is not represented explicitly | `adaptive-trajectory-ledger-v1.json` |
+    19 +
+    20 +## Read of the Map
+    21 +
+    22 +The pattern is consistent:
+    23 +
+    24 +- current artifacts are strong at structural and governance continuity
+    25 +- current artifacts are weaker at lived tactical continuity
+    26 +- the missing layer, if real, is likely sequential and adaptive rather than static
+    27 +
+    28 +## Design Guidance
+    29 +
+    30 +Do not build all candidate artifacts.
+    31 +
+    32 +Use this map in the following order:
+    33 +
+    34 +1. confirm the gap through ablation
+    35 +2. inspect exports and caches
+    36 +3. only then decide whether one narrowly scoped artifact belongs in the restore path
+    37 +
+
+  └ docs\CLOUD_SESSION_STATE_INSPECTION_PLAN.md (+117 -0)
+      1 +# Cloud Session State Inspection Plan
+      2 +
+      3 +Status: artifact-hunt plan
+      4 +Date: 2026-05-17
+      5 +
+      6 +## Goal
+      7 +
+      8 +Identify what the cloud or platform session stores or restores that the current explicit external state model does not.
+      9 +
+     10 +This is not the ablation study. This is the inspection plan for locating the missing variables, if any.
+     11 +
+     12 +## Current Repo-Local Findings
+     13 +
+     14 +Within `S:\WE4FREE-Research-Intake`, current inspection found:
+     15 +
+     16 +- research-pipeline persistence artifacts
+     17 +- governance artifacts
+     18 +- graph state and event history
+     19 +- no repo-local cloud-session continuity artifacts such as session mode, session registry, compact summary, context-restore packet, or sync payloads
+     20 +
+     21 +That means the cloud continuity delta is not already explained by this repo alone.
+     22 +
+     23 +## Inspection Buckets
+     24 +
+     25 +### Bucket A - Things inspectable now in repo or local project files
+     26 +
+     27 +- repo docs and journals
+     28 +- local runtime outputs
+     29 +- tool-specific local history files inside the project directory
+     30 +- any local session export files already saved by the operator into the repo
+     31 +
+     32 +### Bucket B - Things Sean may need to export manually
+     33 +
+     34 +- raw session export from the platform
+     35 +- compact summaries
+     36 +- transcript exports
+     37 +- todo state or task metadata
+     38 +- browser or desktop sync payloads visible through platform export tools
+     39 +
+     40 +### Bucket C - Things that may remain unknown without platform internals
+     41 +
+     42 +- hidden server-side retrieval or search over prior messages
+     43 +- internal compaction heuristics
+     44 +- cross-surface sync metadata not exposed to the user
+     45 +- latent tool-result summaries retained by the platform
+     46 +
+     47 +## FIELD / WHERE TO LOOK / WHY IT MATTERS / CURRENT STATUS
+     48 +
+     49 +| Field | Where to look | Why it matters | Current status |
+     50 +| --- | --- | --- | --- |
+     51 +| Session export | Platform export UI or export API if available | Best direct evidence of what survives across restores | Not found in this repo; manual export required |
+     52 +| Session ID | Export payloads, local cache files, desktop logs, browser storage | Needed to correlate cross-surface continuity | Not found in this repo |
+     53 +| Cross-surface sync identifier | Browser local storage, desktop app storage, CLI cache, platform export | Could explain same-session continuity across surfaces | Unknown |
+     54 +| Compact summary text | Platform compact or summarize output, local cache copies | Candidate source of preserved reasoning trajectory | Unknown |
+     55 +| Transcript before compaction | Full message export | Needed to compare what was available before summarization | Manual export required |
+     56 +| Transcript after compaction | Restored session state, compact output, resumed transcript | Needed to detect what summary residue survives | Manual export required |
+     57 +| Todo or task metadata | Platform UI state, export payloads, local caches | Could preserve unresolved work framing | Unknown |
+     58 +| Tool-call log | Local CLI logs, desktop logs, session export, telemetry | Could preserve tool-use trajectory and local orientation | Not represented in this repo |
+     59 +| Tool-result summaries | Platform export, hidden session summaries if exposed | Could preserve compacted evidence about prior work | Unknown |
+     60 +| Fork or branch ancestry metadata | Session export, platform metadata, local app caches | Could preserve thread lineage beyond transcript text | Unknown |
+     61 +| Restore payload | Any explicit restore packet shown by the platform, local cache, or exported session resume metadata | Needed to compare cloud restore against local restore stack | Unknown
+          |
+     62 +| Operator correction trace | Manual transcript review, diff between prompts and subsequent behavior | Candidate explanation for project-native behavior | Not represented explicitly |
+     63 +| Successful strategy history | Manual transcript review, session export, task logs | Could explain better repair loops and next-step selection | Not represented explicitly |
+     64 +| Failed strategy history | Same as above | Important for self-correction and avoiding repeated failure | Not represented explicitly |
+     65 +| Memory-bank artifacts used during the observed session | External WE4FREE files used in practice | Needed to avoid attributing memory-bank effects to cloud continuity | Out of repo scope he
+         re |
+     66 +| Context-restore packet | External WE4FREE files if they exist, local caches | Needed to compare explicit restore versus cloud continuity | Not found in this repo |
+     67 +| Recovery audit log | External WE4FREE files if they exist | Needed to compare prior recovery quality with the observed Federation effect | Not found in this repo |
+     68 +| Session mode or registry file | External WE4FREE files if they exist | Could show deliberate session identity continuity already in place | Not found in this repo |
+     69 +
+     70 +## Practical Search Order
+     71 +
+     72 +1. Check for any user-saved session exports already placed in repo-adjacent folders.
+     73 +2. Inspect platform-visible export features for the specific long-lived Federation session.
+     74 +3. Compare pre-compact and post-compact transcript views if the platform exposes both.
+     75 +4. Look for local CLI or desktop cache directories that contain session metadata.
+     76 +5. Only after those steps consider platform-internal unknowns.
+     77 +
+     78 +## What the Agent Can Inspect Now
+     79 +
+     80 +From this workspace, the agent can inspect now:
+     81 +
+     87 +Current result:
+     88 +
+     89 +- no explicit cloud-session continuity artifact was found in this repo
+     90 +
+     91 +## What Sean Should Export Next
+     92 +
+     93 +Highest-value manual exports:
+     94 +
+     95 +1. Raw export of the long-lived Federation session
+     96 +2. Any compact or summary payload associated with that session
+     97 +3. The earliest and latest visible transcript slices for that session
+     98 +4. Any task or todo metadata retained by the platform
+     99 +5. Any visible local cache files from CLI, desktop, or browser surfaces tied to that session
+    100 +
+    101 +## What May Remain Unknown
+    102 +
+    103 +Even after export collection, these may remain unknown:
+    104 +
+    105 +- whether the platform retains hidden server-side summaries
+    106 +- whether tool-call traces are embedded into summary state
+    107 +- whether ranking, search, or retrieval over prior session messages is applied automatically
+    108 +- whether cross-surface sync carries metadata not visible to the user
+    109 +
+    110 +## Success Condition
+    111 +
+    112 +This inspection plan succeeds if it narrows the unexplained delta into one of three categories:
+    113 +
+    114 +- already externalized but overlooked
+    115 +- visible after export and therefore instrumentable
+    116 +- platform-internal and only inferable indirectly through ablation
+    117 +
+
+✘ Failed to apply patch
+
+─ Worked for 3m 12s ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+• Writing the central note first, then the supporting spec and mapping docs. The draft is based on repo inspection plus the intake note, with explicit absences called out rather than guessed away.
+
+• Ran @'
+  │ # Cloud Session Continuity Delta
+  │
+  │ … +420 lines
+  └ (no output)
+
+• Working (7m 52s • esc to interrupt)
+
+
+› Improve documentation in @filename
+
+  gpt-5.4 xhigh · S:\WE4FREE-Research-Intake
+
+
+
